@@ -4,6 +4,7 @@ import HomePage from './pages/HomePage';
 import QuizPage from './pages/QuizPage';
 import LeaderboardPage from './pages/LeaderboardPage';
 import ProfilePage from './pages/ProfilePage';
+import Navbar from './components/Navbar';
 
 function App() {
   return (
