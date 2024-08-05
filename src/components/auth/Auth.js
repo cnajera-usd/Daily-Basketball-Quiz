@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { auth } from '../../firebaseConfig'; // Import Firebase auth
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import '../../styles/Auth.css';
 
 const Auth = () => {
   // State to toggle between login and registration forms
