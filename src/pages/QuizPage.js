@@ -11,6 +11,7 @@ const QuizPage = () => {
     const today = new Date().toISOString().split('T')[0];
     if (quizData[today]) {
       setQuizQuestions(quizData[today].questions);
+      console.log(quizData[today].questions);
     } else {
       // Handle the case where there's no quiz data for today
       console.error("No quiz available for today!");
@@ -33,7 +34,7 @@ const QuizPage = () => {
   return (
     <div className="quiz-container">
       <h1 className="quiz-title">NBA Daily Quiz</h1>
-      {quizQuestions.length > 0 && (
+      {quizQuestions.length > 0 ? (
         <>
           <div className="question-section">
             <p className="question-text">
@@ -64,9 +65,11 @@ const QuizPage = () => {
             </div>
           )}
         </>
+      ) : (
+        <p>No quiz available for today. Please check back later!</p>
       )}
     </div>
   );
-};
+}  
 
 export default QuizPage;
