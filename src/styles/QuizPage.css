@@ -1,68 +1,73 @@
 /* QuizPage.css */
 
 .quiz-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
     text-align: center;
-  }
-  
-  .quiz-title {
+    margin-top: 20px;
+}
+
+.quiz-title {
     font-size: 2.5rem;
-    color: #070018; /* Rich black */
     margin-bottom: 20px;
-  }
-  
-  .question-section {
-    margin-bottom: 30px;
-  }
-  
-  .question-text {
+}
+
+.question-text {
     font-size: 1.5rem;
-    color: #070018;
     margin-bottom: 20px;
-  }
-  
-  .answer-options {
+}
+
+.answer-options {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-  }
-  
-  .answer-button {
-    background-color: #F2F4F3; /* White smoke */
-    color: #070018;
+    align-items: center;
+}
+
+.answer-button {
+    margin: 10px;
     padding: 10px 20px;
-    font-size: 1rem;
-    border: 2px solid #070018;
-    border-radius: 5px;
+    font-size: 1.2rem;
+    border: 2px solid #000;
+    background-color: #f2f4f3;
     cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .answer-button:hover {
-    background-color: #E88D67; /* Atomic tangerine */
-    color: #FFFFFF;
-  }
-  
-  .feedback {
-    margin-top: 20px;
-    color: #92140C; /* Penn red */
-    font-size: 1.5rem;
-  }
-  
-  .nav-button {
-    background-color: #92140C; /* Penn red */
+    width: 60%;
+    transition: background-color 0.3s ease;
+}
+
+.answer-button.selected {
+    background-color: #92140c;
     color: white;
+}
+
+.submit-button {
+    margin-top: 20px;
     padding: 10px 20px;
-    font-size: 1rem;
+    font-size: 1.2rem;
+    background-color: #79818c;
+    color: white;
     border: none;
-    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .nav-button:hover {
-    background-color: #E88D67;
-  }
-  
+    transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+    background-color: #92140c;
+}
+
+.feedback {
+    margin-top: 20px;
+    font-size: 1.5rem;
+}
+
+.nav-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    background-color: #e88d67;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.nav-button:hover {
+    background-color: #92140c;
+}

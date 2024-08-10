@@ -15,7 +15,7 @@ function App() {
         <Navbar /> {/* Use the Navbar component here */}
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/Daily Quiz" element={<QuizPage />} />
+          <Route path="/Quiz" element={<QuizPage />} />
           <Route path="/leaderboard" element={<LeaderboardPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/auth" element={<Auth />} />
