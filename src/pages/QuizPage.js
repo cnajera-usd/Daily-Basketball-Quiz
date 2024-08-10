@@ -41,42 +41,34 @@ const QuizPage = () => {
         {quizQuestions.length > 0 ? (
             <div>
                 <div className="question-section">
-                    <p className="question-text">
-                        {quizQuestions[currentQuestionIndex].question}
-                    </p>
+                    <p className="question-text">{quizQuestions[currentQuestionIndex].question}</p>
                     <div className="answer-options">
                         {quizQuestions[currentQuestionIndex].answers.map((answer, index) => (
                             <button
                                 key={index}
-                                className={`answer-button ${
-                                    selectedAnswerIndex === index ? 'selected' : ''
-                                }`}
+                                className={`answer-button ${selectedAnswerIndex === index ? "selected" : ""}`}
                                 onClick={() => handleAnswerClick(index)}
                             >
                                 {answer}
                             </button>
                         ))}
                     </div>
+                    <button className="submit-button" onClick={handleSubmitAnswer}>
+                        Submit
+                    </button>
                 </div>
-                <div className="feedback-section">
-                    {selectedAnswerIndex !== null && feedback === '' && (
-                        <button className="submit-button" onClick={handleSubmitAnswer}>
-                            Submit Answer
-                        </button>
-                    )}
-                    {feedback && (
-                        <div className="feedback">
-                            <p>{feedback}</p>
-                            {currentQuestionIndex < quizQuestions.length - 1 ? (
-                                <button className="nav-button" onClick={handleNextQuestion}>
-                                    Next Question
-                                </button>
-                            ) : (
-                                <p>You've completed the quiz!</p>
-                            )}
-                        </div>
-                    )}
-                </div>
+                {feedback && (
+                    <div className="feedback">
+                        <p>{feedback}</p>
+                        {currentQuestionIndex < quizQuestions.length - 1 ? (
+                            <button className="nav-button" onClick={handleNextQuestion}>
+                                Next Question
+                            </button>
+                        ) : (
+                            <p>You've completed the quiz!</p>
+                        )}
+                    </div>
+                )}
             </div>
         ) : (
             <p>No quiz available for today. Please check back later!</p>
