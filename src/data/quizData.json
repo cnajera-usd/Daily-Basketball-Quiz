@@ -1,0 +1,47 @@
+{
+    "2024-08-10": {
+      "questions": [
+        {
+          "question": "Who won the NBA MVP in 2020?",
+          "answers": [
+            "LeBron James",
+            "Giannis Antetokounmpo",
+            "James Harden",
+            "Luka Dončić",
+            "Anthony Davis"
+          ],
+          "correctAnswerIndex": 1
+        },
+        {
+          "question": "Which team won the NBA Championship in 2019?",
+          "answers": [
+            "Golden State Warriors",
+            "Toronto Raptors",
+            "Los Angeles Lakers",
+            "Milwaukee Bucks",
+            "Houston Rockets"
+          ],
+          "correctAnswerIndex": 1
+        }
+        
+      ]
+    },
+    
+    "2024-08-11": {
+      "questions": [
+        {
+          "question": "Which player holds the record for the most points in a single NBA game?",
+          "answers": [
+            "Kobe Bryant",
+            "Michael Jordan",
+            "Wilt Chamberlain",
+            "LeBron James",
+            "Shaquille O'Neal"
+          ],
+          "correctAnswerIndex": 2
+        }
+    
+      ]
+    }
+  }
+  

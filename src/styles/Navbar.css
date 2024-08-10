@@ -18,11 +18,31 @@
   
   .navbar a {
     color: white; /* Text color for navbar links */
-    padding: 10px 20px;
+    text-decoration: none;
+    padding: 10px 15px;
     transition: background-color 0.3s;
   }
   
   .navbar a:hover {
-    background-color: var(--secondary-color); /* Use secondary color for hover state */
+    color: #E88D67;
+    background-color: transparent;
+    border-radius: 5px;
   }
-  
+
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .navbar a {
+    display: block;
+    padding: 10px 0;
+  }
+
+  .navbar .menu {
+    flex-direction: column;
+    gap: 0;
+    width: 100%;
+  }
+}
