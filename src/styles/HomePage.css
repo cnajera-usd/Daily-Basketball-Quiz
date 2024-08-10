@@ -1,0 +1,85 @@
+/* HomePage.css */
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .hero {
+    text-align: center;
+    margin-bottom: 40px;
+    position: relative;
+    overflow: hidden;
+    height: 400px;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
+  }
+  
+  .kobe-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.8;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+  }
+  
+  .hero h1 {
+    color: #F2F4F3; /* Light color for better contrast */
+    font-size: 3rem;
+    margin-top: 150px;
+    z-index: 1;
+    position: relative;
+  }
+  
+  .hero p {
+    font-size: 1.5rem;
+    color: #F2F4F3; /* Light color for better contrast */
+    z-index: 1;
+    position: relative;
+  }
+  
+  .introduction {
+    margin: 40px 0;
+    text-align: center;
+    background-color: #F2F4F3; /* Light background for contrast */
+    padding: 20px;
+    border-radius: 10px;
+  }
+  
+  .introduction h2 {
+    color: #070018; /* Dark text for contrast */
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+  
+  .introduction p {
+    color: #070018; /* Dark text for contrast */
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  
+  .cta {
+    text-align: center;
+    margin-bottom: 50px;
+  }
+  
+  .btn-primary {
+    background-color: #92140C; /* Penn red for button */
+    color: white;
+    padding: 15px 30px;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+  }
+  
+  .btn-primary:hover {
+    background-color: #E88D67; /* Highlight color for button hover */
+    transform: translateY(-2px);
+  }
+  

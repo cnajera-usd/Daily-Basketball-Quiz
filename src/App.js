@@ -6,6 +6,7 @@ import LeaderboardPage from './pages/LeaderboardPage';
 import ProfilePage from './pages/ProfilePage';
 import Navbar from './components/Navbar';
 import Auth from './components/auth/Auth';
+import './styles/theme.css';
 
 function App() {
   return (
