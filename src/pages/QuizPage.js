@@ -35,46 +35,61 @@ const QuizPage = () => {
     setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
   };
 
+const handlePreviousQuestion = () => {
+    setFeedback("");
+    selectedAnswerIndex(null);
+    setCurrentQuestionIndex((prevIndex) => prevIndex - 1);
+};
+
+
   return (
     <div className="quiz-container">
-        <h1 className="quiz-title">NBA Daily Quiz</h1>
-        {quizQuestions.length > 0 ? (
-            <div>
-                <div className="question-section">
-                    <p className="question-text">{quizQuestions[currentQuestionIndex].question}</p>
-                    <div className="answer-options">
-                        {quizQuestions[currentQuestionIndex].answers.map((answer, index) => (
-                            <button
-                                key={index}
-                                className={`answer-button ${selectedAnswerIndex === index ? "selected" : ""}`}
-                                onClick={() => handleAnswerClick(index)}
-                            >
-                                {answer}
-                            </button>
-                        ))}
-                    </div>
-                    <button className="submit-button" onClick={handleSubmitAnswer}>
-                        Submit
-                    </button>
-                </div>
-                {feedback && (
-                    <div className="feedback">
-                        <p>{feedback}</p>
-                        {currentQuestionIndex < quizQuestions.length - 1 ? (
-                            <button className="nav-button" onClick={handleNextQuestion}>
-                                Next Question
-                            </button>
-                        ) : (
-                            <p>You've completed the quiz!</p>
-                        )}
-                    </div>
-                )}
+      <h1 className="quiz-title">NBA Daily Quiz</h1>
+      {quizQuestions.length > 0 ? (
+        <div>
+          <div className="question-section">
+            <p className="question-text">
+              {quizQuestions[currentQuestionIndex].question}
+            </p>
+            <div className="answer-options">
+              {quizQuestions[currentQuestionIndex].answers.map((answer, index) => (
+                <button
+                  key={index}
+                  className={`answer-button ${selectedAnswerIndex === index ? 'selected' : ''}`}
+                  onClick={() => handleAnswerClick(index)}
+                >
+                  {answer}
+                </button>
+              ))}
             </div>
-        ) : (
-            <p>No quiz available for today. Please check back later!</p>
-        )}
+          </div>
+          {feedback && (
+            <p className="feedback">{feedback}</p>
+          )}
+
+          <div className="action-buttons">
+            {currentQuestionIndex > 0 && (
+                <button className='nav-button' onClick={handlePreviousQuestion}>
+                    Previous Question
+                </button>
+            )}
+            <button className="nav-button submit-button" onClick={handleSubmitAnswer}>
+              Submit
+            </button>
+            {currentQuestionIndex < quizQuestions.length - 1 ? (
+              <button className="nav-button" onClick={handleNextQuestion}>
+                Next Question
+              </button>
+            ) : (
+              <p>You’ve completed the quiz!</p>
+            )}
+          </div>
+        </div>
+      ) : (
+        <p>No quiz available for today. Please check back later!</p>
+      )}
     </div>
-);
-};
+  );
+}  
 
 export default QuizPage;

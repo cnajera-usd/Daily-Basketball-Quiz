@@ -37,6 +37,12 @@
     color: white;
 }
 
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
 .submit-button {
     margin-top: 20px;
     padding: 10px 20px;
@@ -53,21 +59,23 @@
 }
 
 .feedback {
-    margin-top: 20px;
-    font-size: 1.5rem;
+    text-align: center;
+    font-weight: bold;
+    margin-top: 10px;
+    color: #92140C;
 }
 
 .nav-button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    font-size: 1.2rem;
-    background-color: #e88d67;
+    background-color: #79818C; /* Slate gray from your palette */
     color: white;
+    padding: 10px 20px;
     border: none;
+    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    font-size: 16px;
 }
 
 .nav-button:hover {
-    background-color: #92140c;
+    background-color: #92140C; /* Penn red from your palette */
 }
+
