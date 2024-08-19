@@ -37,7 +37,7 @@ const QuizPage = () => {
 
 const handlePreviousQuestion = () => {
     setFeedback("");
-    selectedAnswerIndex(null);
+    setSelectedAnswerIndex(null);
     setCurrentQuestionIndex((prevIndex) => prevIndex - 1);
 };
 
