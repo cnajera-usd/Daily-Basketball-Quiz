@@ -11,7 +11,9 @@
 }
 
 .question-text {
-    font-size: 1.5rem;
+    color: #000;
+    font-size: 24px;
+    font-weight: bold;
     margin-bottom: 20px;
 }
 
@@ -81,9 +83,11 @@
 }
 
 .completed-message {
-    color: #2ecc71; /* Green color for completion message */
-    text-align: center;
-    margin-top: 15px;
-    font-size: 20px;
+    color: #000; /* This is a blue color, but you can choose any color you like */
+    font-size: 25px;
     font-weight: bold;
+    margin-top: 20px;
   }
+
+
+  

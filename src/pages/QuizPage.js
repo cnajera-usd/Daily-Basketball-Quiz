@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/QuizPage.css';
-import quizData from '../data/quizData.json';
+
 
 const QuizPage = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -9,13 +9,21 @@ const QuizPage = () => {
   const [quizQuestions, setQuizQuestions] = useState([]);
 
   useEffect(() => {
-    const today = new Date().toISOString().split('T')[0];
-    if (quizData[today]) {
-      setQuizQuestions(quizData[today].questions);
-    } else {
-      // Handle the case where there's no quiz data for today
-      console.error("No quiz available for today!");
-    }
+    const fetchQuizData = async () => {
+      try {
+        const response = await fetch('/api/quiz');
+        if (response.ok) {
+          const data = await response.json();
+          setQuizQuestions(data.quesitons);
+        } else {
+          console.error('Failed to fetch quiz data');
+        }
+      } catch (error) {
+        console.error('Error fetching quiz data:', error);
+      }
+    };
+
+    fetchQuizData();
   }, []);
 
   const handleAnswerClick = (index) => {
@@ -81,7 +89,8 @@ const QuizPage = () => {
             )}
           </div>
           {currentQuestionIndex >= quizQuestions.length - 1 && (
-            <p className="completed-message">You’ve completed the quiz!</p>
+            <p className="completed-message">You’ve completed the quiz! 
+            Make sure to come back tomorrow for the next Daily NBA Quiz :)</p>
           )}
         </div>
       ) : (
