@@ -74,14 +74,15 @@ const QuizPage = () => {
             <button className="nav-button submit-button" onClick={handleSubmitAnswer}>
               Submit
             </button>
-            {currentQuestionIndex < quizQuestions.length - 1 ? (
+            {currentQuestionIndex < quizQuestions.length - 1 && (
               <button className="nav-button" onClick={handleNextQuestion}>
                 Next Question
               </button>
-            ) : (
-              <p className="completed-message">You’ve completed the quiz!</p>
             )}
           </div>
+          {currentQuestionIndex >= quizQuestions.length - 1 && (
+            <p className="completed-message">You’ve completed the quiz!</p>
+          )}
         </div>
       ) : (
         <p>No quiz available for today. Please check back later!</p>
