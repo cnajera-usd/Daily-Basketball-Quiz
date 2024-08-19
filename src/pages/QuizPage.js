@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/QuizPage.css';
 
-
 const QuizPage = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [feedback, setFeedback] = useState(null);
@@ -11,10 +10,10 @@ const QuizPage = () => {
   useEffect(() => {
     const fetchQuizData = async () => {
       try {
-        const response = await fetch('/api/quiz');
+        const response = await fetch('http://localhost:5000/api/quiz');
         if (response.ok) {
           const data = await response.json();
-          setQuizQuestions(data.quesitons);
+          setQuizQuestions(data.questions);
         } else {
           console.error('Failed to fetch quiz data');
         }
@@ -72,7 +71,6 @@ const QuizPage = () => {
           {feedback && (
             <p className="feedback">{feedback}</p>
           )}
-
           <div className="action-buttons">
             {currentQuestionIndex > 0 && (
               <button className='nav-button' onClick={handlePreviousQuestion}>
@@ -82,16 +80,14 @@ const QuizPage = () => {
             <button className="nav-button submit-button" onClick={handleSubmitAnswer}>
               Submit
             </button>
-            {currentQuestionIndex < quizQuestions.length - 1 && (
+            {currentQuestionIndex < quizQuestions.length - 1 ? (
               <button className="nav-button" onClick={handleNextQuestion}>
                 Next Question
               </button>
+            ) : (
+              <p className="completed-message">You’ve completed the quiz! Make sure to come back tomorrow for the next Daily NBA Quiz :)</p>
             )}
           </div>
-          {currentQuestionIndex >= quizQuestions.length - 1 && (
-            <p className="completed-message">You’ve completed the quiz! 
-            Make sure to come back tomorrow for the next Daily NBA Quiz :)</p>
-          )}
         </div>
       ) : (
         <p>No quiz available for today. Please check back later!</p>
