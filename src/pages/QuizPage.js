@@ -18,11 +18,10 @@ const QuizPage = () => {
     }
   }, []);
 
-
   const handleAnswerClick = (index) => {
     setSelectedAnswerIndex(index);
     setFeedback(null);
-  }
+  };
 
   const handleSubmitAnswer = () => {
     const isCorrect = selectedAnswerIndex === quizQuestions[currentQuestionIndex].correctAnswerIndex;
@@ -35,12 +34,11 @@ const QuizPage = () => {
     setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
   };
 
-const handlePreviousQuestion = () => {
-    setFeedback("");
+  const handlePreviousQuestion = () => {
+    setFeedback('');
     setSelectedAnswerIndex(null);
     setCurrentQuestionIndex((prevIndex) => prevIndex - 1);
-};
-
+  };
 
   return (
     <div className="quiz-container">
@@ -69,9 +67,9 @@ const handlePreviousQuestion = () => {
 
           <div className="action-buttons">
             {currentQuestionIndex > 0 && (
-                <button className='nav-button' onClick={handlePreviousQuestion}>
-                    Previous Question
-                </button>
+              <button className='nav-button' onClick={handlePreviousQuestion}>
+                Previous Question
+              </button>
             )}
             <button className="nav-button submit-button" onClick={handleSubmitAnswer}>
               Submit
@@ -81,7 +79,7 @@ const handlePreviousQuestion = () => {
                 Next Question
               </button>
             ) : (
-              <p>You’ve completed the quiz!</p>
+              <p className="completed-message">You’ve completed the quiz!</p>
             )}
           </div>
         </div>
@@ -90,6 +88,6 @@ const handlePreviousQuestion = () => {
       )}
     </div>
   );
-}  
+};
 
 export default QuizPage;
