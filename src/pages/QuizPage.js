@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/QuizPage.css';
+import quizData from '../data/quizData.json';
+
 
 const QuizPage = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -10,13 +12,9 @@ const QuizPage = () => {
   useEffect(() => {
     const fetchQuizData = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/quiz');
-        if (response.ok) {
-          const data = await response.json();
-          setQuizQuestions(data.questions);
-        } else {
-          console.error('Failed to fetch quiz data');
-        }
+        // Directly assign the questions from your JSON file to check display logic
+        const today = new Date().toISOString().split('T')[0];
+        setQuizQuestions(quizData[today].questions || []);
       } catch (error) {
         console.error('Error fetching quiz data:', error);
       }
@@ -31,16 +29,18 @@ const QuizPage = () => {
   };
 
   const handleSubmitAnswer = () => {
-    const isCorrect = selectedAnswerIndex === quizQuestions[currentQuestionIndex].correctAnswerIndex;
+    const isCorrect = selectedAnswerIndex === quizQuestions[currentQuestionIndex]?.correctAnswerIndex;
     setFeedback(isCorrect ? 'Correct!' : 'Incorrect.');
   };
 
   const handleNextQuestion = () => {
-    setFeedback('');
-    setSelectedAnswerIndex(null);
-    setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
+    if (currentQuestionIndex < quizQuestions.length - 1) {
+      setFeedback('');
+      setSelectedAnswerIndex(null);
+      setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
+    }
   };
-
+  
   const handlePreviousQuestion = () => {
     setFeedback('');
     setSelectedAnswerIndex(null);
@@ -54,10 +54,10 @@ const QuizPage = () => {
         <div>
           <div className="question-section">
             <p className="question-text">
-              {quizQuestions[currentQuestionIndex].question}
+              {quizQuestions[currentQuestionIndex]?.question}
             </p>
             <div className="answer-options">
-              {quizQuestions[currentQuestionIndex].answers.map((answer, index) => (
+              {quizQuestions[currentQuestionIndex]?.answers.map((answer, index) => (
                 <button
                   key={index}
                   className={`answer-button ${selectedAnswerIndex === index ? 'selected' : ''}`}
