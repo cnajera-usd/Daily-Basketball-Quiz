@@ -1,43 +1,36 @@
-// src/pages/Login.js
-import React, { useState } from 'react';
-import { login } from '../services/authService';
+// src/components/Login.js
 
-const Login = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState(null);
+import React, { useState } from "react";
+import { handleSignIn } from "../services/authService";
 
-    const handleLogin = async (e) => {
-        e.preventDefault();
-        try {
-            await login(email, password);
-            alert("User logged in successfully!");
-        } catch (error) {
-            setError(error.message);
-        }
-    };
+function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-    return (
-        <form onSubmit={handleLogin}>
-            <h1>Login</h1>
-            <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-            />
-            <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-            />
-            {error && <p>{error}</p>}
-            <button type="submit">Login</button>
-        </form>
-    );
-};
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await handleSignIn(email, password);
+  };
+
+  return (
+    <div>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email"
+        />
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Password"
+        />
+        <button type="submit">Login</button>
+      </form>
+    </div>
+  );
+}
 
 export default Login;

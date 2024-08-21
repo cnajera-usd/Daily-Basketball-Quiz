@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import QuizPage from './pages/QuizPage';
@@ -7,7 +7,8 @@ import ProfilePage from './pages/ProfilePage';
 import Navbar from './components/Navbar';
 import Auth from './components/auth/Auth';
 import './styles/theme.css';
-
+import { auth } from "./firebaseConfig"; 
+import { onAuthStateChanged } from "firebase/auth";
 
 function App() {
 

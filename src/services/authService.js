@@ -10,8 +10,14 @@ export const signUp = async (email, password) => {
     }
 };
 
+// Function to handle user logic with additional check for existing authentication
 export const login = async (email, password) => {
     try {
+        // check if user is already signed in
+        if (auth.currentUser) {
+            console.log("Already signed in");
+            return;
+        }
         await signInWithEmailAndPassword(auth, email, password);
     } catch (error) {
         throw error;
