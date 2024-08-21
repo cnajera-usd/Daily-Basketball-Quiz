@@ -1,21 +1,25 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+import { getAuth } from "firebase/auth";  // Import Firebase Auth
+import { getFirestore } from "firebase/firestore"; // Import Firestore if you're using it
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyCoVBD-DaDzcR31iUBmacphpb_hOMCe-IQ",
+  authDomain: "basketball-quiz-website.firebaseapp.com",
+  projectId: "basketball-quiz-website",
+  storageBucket: "basketball-quiz-website.appspot.com",
+  messagingSenderId: "90271247095",
+  appId: "1:90271247095:web:b51abdc12096b7a7fe41f2",
+  measurementId: "G-D78H67B60C"
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const auth = getAuth(app);  // Initialize Firebase Auth
+const db = getFirestore(app); // Initialize Firestore (if using Firestore)
 
-// Initialize Firebase Authentication and get a reference to the service
-const auth = getAuth(app);
-
-export { auth };
+// Export auth and db so you can use them in other files
+export { auth, db };
