@@ -12,6 +12,8 @@ const QuizPage = () => {
   const [answers, setAnswers] = useState({});
   const [score, setScore] = useState(0);
   const [showScoreModal, setShowScoreModal] = useState(false);
+  const [hasCompletedQuiz, setHasCompletedQuiz] = useState(false); // Initialize with false
+
 
   useEffect(() => {
     const fetchQuizData = async () => {
@@ -32,9 +34,11 @@ const QuizPage = () => {
   };
 
   const handleSubmitAnswer = () => {
+    // Prevent further submissions if the quiz is completed
+    if (hasCompletedQuiz) return;
+
     const isCorrect = selectedAnswerIndex === quizQuestions[currentQuestionIndex]?.correctAnswerIndex;
 
-    // Store the user's answer and feedback
     setAnswers((prevAnswers) => ({
         ...prevAnswers,
         [currentQuestionIndex]: {
@@ -43,17 +47,18 @@ const QuizPage = () => {
         },
     }));
 
-    setFeedback(isCorrect ? 'Correct!' : 'Incorrect.'); // Set feedback based on correctness
+    setFeedback(isCorrect ? 'Correct!' : 'Incorrect.');
 
     if (isCorrect) {
-        setScore((prevScore) => prevScore + 1); // Increment score if correct
+        setScore((prevScore) => prevScore + 1);
     }
 
-    // Check if it's the last question
+    // If this is the last question, set the quiz as completed
     if (currentQuestionIndex === quizQuestions.length - 1) {
-        setShowScoreModal(true);  // Show modal once the last question is answered
+        setHasCompletedQuiz(true);
+        setShowScoreModal(true);
     }
-  };
+};
 
   const handleNextQuestion = () => {
     if (currentQuestionIndex < quizQuestions.length - 1) {
@@ -89,7 +94,7 @@ const QuizPage = () => {
 
   return (
     <div className="quiz-container">
-      <h1 className="quiz-title">NBA Daily Quiz</h1>
+      <h1 className="quiz-title">Daily NBA Quiz</h1>
       {quizQuestions.length > 0 ? (
         <div>
           <div className="question-section">
@@ -118,9 +123,14 @@ const QuizPage = () => {
                 Previous Question
               </button>
             )}
-            <button className="nav-button submit-button" onClick={handleSubmitAnswer}>
+            <button
+              className="nav-button submit-button"
+              onClick={handleSubmitAnswer}
+              disabled={hasCompletedQuiz}  // Disable if the quiz is completed
+            >
               Submit
             </button>
+
             {currentQuestionIndex < quizQuestions.length - 1 && (
               <button className="nav-button" onClick={handleNextQuestion}>
                 Next Question
