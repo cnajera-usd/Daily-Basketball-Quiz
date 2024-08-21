@@ -6,7 +6,7 @@ import { getFirestore } from "firebase/firestore"; // Import Firestore if you're
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: process.env.GOOGLE_API_KEY,
+  apiKey: process.env.REACT_APP_GOOGLE_API_KEY,
   authDomain: "basketball-quiz-website.firebaseapp.com",
   projectId: "basketball-quiz-website",
   storageBucket: "basketball-quiz-website.appspot.com",
@@ -14,6 +14,7 @@ const firebaseConfig = {
   appId: "1:90271247095:web:b51abdc12096b7a7fe41f2",
   measurementId: "G-D78H67B60C"
 };
+
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
