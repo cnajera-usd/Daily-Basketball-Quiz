@@ -8,7 +8,25 @@ import Navbar from './components/Navbar';
 import Auth from './components/auth/Auth';
 import './styles/theme.css';
 
+
 function App() {
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log("User is signed in:", user);
+        // update app to state to reflect that user is signed in
+
+      } else {
+        console.log("No user is signed in");
+        // Update app to state to reflect that no user is signed in
+      }
+  });
+
+  return () => unsubscribe();
+}, []);
+  
+  
   return (
     <Router>
       <div>

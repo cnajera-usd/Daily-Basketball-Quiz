@@ -22,5 +22,14 @@ const analytics = getAnalytics(app);
 const auth = getAuth(app);  // Initialize Firebase Auth
 const db = getFirestore(app); // Initialize Firestore (if using Firestore)
 
+
+setPersistence(auth, browserLocalPersistence)
+  .then(() => {
+    console.log("Persistence mode set to browserLocalPersistence");
+  })
+  .catch((error) => {
+    console.error("Error setting persistence:", error);
+  });
+  
 // Export auth and db so you can use them in other files
 export { app, auth, db };

@@ -124,7 +124,7 @@ const closeScoreModal = () => {
           setHasCompletedQuiz(true);
           setShowScoreModal(true);
 
-          const userId = "exampleUserId";
+          const userId = auth.currentUser ? auth.currentUser.uid : "anonymous";
 
           saveQuizScore(userId, score, totalPossibleScore, new Date().toLocaleDateString('en-CA'));
       }
