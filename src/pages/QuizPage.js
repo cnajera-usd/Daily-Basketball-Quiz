@@ -6,10 +6,6 @@ import { auth } from '../firebaseConfig';
 import { saveQuizScore } from '../services/quizScoreService';
 
 
-
-
-
-
 const QuizPage = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [feedback, setFeedback] = useState(null);

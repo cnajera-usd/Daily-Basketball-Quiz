@@ -1,19 +1,21 @@
-import { getFirestore, collection, addDoc } from 'firebase/firestore';
-import { app, auth } from '../firebaseConfig'; // Import both app and auth
+// src/services/quizScoreService.js
+import { db } from '../firebaseConfig';
+import { collection, addDoc } from 'firebase/firestore';
 
-const db = getFirestore(app);
-
-export const saveQuizScore = async (userId, score, totalPossibleScore, quizDate) => {
-  try {
-    const docRef = await addDoc(collection(db, "quizScores"), {
-      userId: userId,
-      score: score,
-      totalPossibleScore: totalPossibleScore,
-      quizDate: quizDate,
-      timestamp: new Date(),
-    });
-    console.log("Document written with ID: ", docRef.id);
-  } catch (e) {
-    console.error("Error adding document: ", e);
-  }
+// Function to save the quiz score to Firestore
+export const saveQuizScore = async (userId, score, totalScore, quizDate) => {
+    try {
+        const quizCollection = collection(db, 'quizScores');
+        await addDoc(quizCollection, {
+            userId,
+            score,
+            totalScore,
+            quizDate,
+            timestamp: new Date()
+        });
+        console.log('Quiz score saved successfully!');
+    } catch (error) {
+        console.error('Error saving quiz score:', error);
+    }
 };
+

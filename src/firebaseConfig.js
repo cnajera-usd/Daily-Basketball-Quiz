@@ -22,4 +22,4 @@ const auth = getAuth(app);  // Initialize Firebase Auth
 const db = getFirestore(app); // Initialize Firestore (if using Firestore)
 
 // Export auth and db so you can use them in other files
-export { auth, db };
+export { app, auth, db };
