@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import '../styles/QuizPage.css';
 import quizData from '../data/quizData.json';
 import ScoreModal from '../components/ScoreModal'; // Adjust path as necessary
-import { saveQuizScore } from '../services/quizScoreService';  // Adjust the path accordingly
 import { auth } from '../firebaseConfig';
+import { saveQuizScore } from '../services/quizScoreService';
+
 
 
 
