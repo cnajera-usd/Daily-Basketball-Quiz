@@ -5,7 +5,6 @@ import ScoreModal from '../components/ScoreModal'; // Adjust path as necessary
 import { auth } from '../firebaseConfig';
 import { saveQuizScore } from '../services/quizScoreService';
 
-
 const QuizPage = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [feedback, setFeedback] = useState(null);
@@ -13,7 +12,7 @@ const QuizPage = () => {
   const [quizQuestions, setQuizQuestions] = useState([]);
   const [answers, setAnswers] = useState({});
   const [score, setScore] = useState(0);
-  const [totalPossibleScore, setTotalPossibleScore] = useState(0); // New state for total possible score
+  const [totalPossibleScore, setTotalPossibleScore] = useState(0); // State for total possible score
   const [showScoreModal, setShowScoreModal] = useState(false);
   const [hasCompletedQuiz, setHasCompletedQuiz] = useState(false); 
 
@@ -53,33 +52,40 @@ const QuizPage = () => {
       fetchQuizData();
   }, []);
 
+  // New useEffect to handle saving the score once the quiz is completed
+  useEffect(() => {
+      if (hasCompletedQuiz) {
+          const userId = auth.currentUser ? auth.currentUser.uid : "anonymous";
+          saveQuizScore(userId, score, totalPossibleScore, new Date().toLocaleDateString('en-CA'));
+      }
+  }, [hasCompletedQuiz, score, totalPossibleScore]);
+
   const handleAnswerClick = (index) => {
     setSelectedAnswerIndex(index);
     setFeedback(null); // Clear previous feedback
-};
+  };
 
-const handleNextQuestion = () => {
-    if (currentQuestionIndex < quizQuestions.length - 1) {
-        const nextIndex = currentQuestionIndex + 1;
-        setCurrentQuestionIndex(nextIndex);
-        setSelectedAnswerIndex(null); // Reset the selected answer
-        setFeedback(null); // Clear feedback for the new question
-    }
-};
+  const handleNextQuestion = () => {
+      if (currentQuestionIndex < quizQuestions.length - 1) {
+          const nextIndex = currentQuestionIndex + 1;
+          setCurrentQuestionIndex(nextIndex);
+          setSelectedAnswerIndex(null); // Reset the selected answer
+          setFeedback(null); // Clear feedback for the new question
+      }
+  };
 
-const handlePreviousQuestion = () => {
-    if (currentQuestionIndex > 0) {
-        const prevIndex = currentQuestionIndex - 1;
-        setCurrentQuestionIndex(prevIndex);
-        setSelectedAnswerIndex(answers[prevIndex]?.selectedAnswerIndex || null);
-        setFeedback(answers[prevIndex]?.feedback || null);
-    }
-};
+  const handlePreviousQuestion = () => {
+      if (currentQuestionIndex > 0) {
+          const prevIndex = currentQuestionIndex - 1;
+          setCurrentQuestionIndex(prevIndex);
+          setSelectedAnswerIndex(answers[prevIndex]?.selectedAnswerIndex || null);
+          setFeedback(answers[prevIndex]?.feedback || null);
+      }
+  };
 
-const closeScoreModal = () => {
-    setShowScoreModal(false);
-};
-
+  const closeScoreModal = () => {
+      setShowScoreModal(false);
+  };
 
   const handleSubmitAnswer = () => {
       if (hasCompletedQuiz) return;
@@ -123,14 +129,8 @@ const closeScoreModal = () => {
       if (currentQuestionIndex === quizQuestions.length - 1) {
           setHasCompletedQuiz(true);
           setShowScoreModal(true);
-
-          const userId = auth.currentUser ? auth.currentUser.uid : "anonymous";
-
-          saveQuizScore(userId, score, totalPossibleScore, new Date().toLocaleDateString('en-CA'));
       }
   };
-
-  // The rest of your QuizPage component remains the same...
 
   return (
       <div className="quiz-container">
