@@ -34,6 +34,11 @@
     transition: background-color 0.3s ease;
 }
 
+.answer-button:hover {
+    background-color: #f28b82;
+}
+
+
 .answer-button.selected {
     background-color: #92140c;
     color: white;
