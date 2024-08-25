@@ -3,6 +3,7 @@ import { auth } from '../../firebaseConfig'; // Import Firebase auth
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'; // Import updateProfile to update user profile
 import { doc, setDoc } from 'firebase/firestore'; // Import Firestore functions
 import { db } from '../../firebaseConfig'; // Import Firestore database
+import './styles/Register.css';
 
 const Register = () => {
   const [email, setEmail] = useState(''); // State for storing email input

@@ -11,3 +11,40 @@
 }
 
 /* style for each input field */
+
+.container input[type="text"],
+.container input[type="email"],
+.container input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid red; /* Change to red */
+    border-radius: 5px;
+    background-color: yellow; /* Add a background color */
+}
+
+
+/* style the submit button */
+
+.container button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* add hover effect for the button */
+.container button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+/* style error messages */
+.container p {
+    color: red;
+    font-weight: bold;
+    margin: 10px;
+}
