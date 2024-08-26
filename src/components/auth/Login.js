@@ -1,3 +1,6 @@
+/*
+
+
 import React, { useState } from 'react';
 import { auth } from '../../firebaseConfig'; // Import Firebase auth
 import { signInWithEmailAndPassword } from 'firebase/auth';
@@ -41,9 +44,11 @@ const Login = () => {
         </div>
         <button type="submit">Login</button>
       </form>
-      {error && <p style={{ color: 'red' }}>{error}</p>} {/* Display error messages */}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
   );
 };
 
 export default Login;
+
+*/
