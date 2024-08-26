@@ -1,59 +1,67 @@
 import React, { useState } from 'react';
 import { auth } from '../../firebaseConfig'; // Import Firebase auth
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth'; // Import updateProfile to update user profile
 import '../../styles/Auth.css';
 
 const Auth = () => {
-  // State to toggle between login and registration forms
   const [isRegistering, setIsRegistering] = useState(true);
 
-  // Form fields
-  const [email, setEmail] = useState(''); // State for storing email input
-  const [password, setPassword] = useState(''); // State for storing password input
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState(''); // Add username state
+  const [error, setError] = useState('');
 
-  // Error handling
-  const [error, setError] = useState(''); // State for storing error messages
-
-  // Function to handle registration
   const handleRegister = async (e) => {
-    e.preventDefault(); // Prevent form submission from reloading the page
+    e.preventDefault();
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      await updateProfile(user, { displayName: username }); // Update user profile with username
       alert('Registration successful! You can now log in.');
-      setEmail(''); // Clear email input field
-      setPassword(''); // Clear password input field
-      setError(''); // Clear error message
-      setIsRegistering(false); // Switch to login form after registration
+      setEmail('');
+      setPassword('');
+      setUsername(''); // Clear username input field
+      setError('');
+      setIsRegistering(false);
     } catch (error) {
-      setError(error.message); // Set error message if registration fails
+      setError(error.message);
     }
   };
 
-  // Function to handle login
   const handleLogin = async (e) => {
-    e.preventDefault(); // Prevent form submission from reloading the page
+    e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
       alert('Login successful!');
-      setEmail(''); // Clear email input field
-      setPassword(''); // Clear password input field
-      setError(''); // Clear error message
+      setEmail('');
+      setPassword('');
+      setError('');
     } catch (error) {
-      setError(error.message); // Set error message if login fails
+      setError(error.message);
     }
   };
 
-  // Render form based on the current state
   return (
     <div className="container">
       <h2>{isRegistering ? 'Register' : 'Login'}</h2>
       <form onSubmit={isRegistering ? handleRegister : handleLogin}>
+        {isRegistering && ( // Only show username input if registering
+          <div>
+            <label>Username:</label>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </div>
+        )}
         <div>
           <label>Email:</label>
           <input
             type="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)} // Update email state on change
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>
@@ -62,13 +70,13 @@ const Auth = () => {
           <input
             type="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)} // Update password state on change
+            onChange={(e) => setPassword(e.target.value)}
             required
           />
         </div>
         <button type="submit">{isRegistering ? 'Register' : 'Login'}</button>
       </form>
-      {error && <p style={{ color: 'red' }}>{error}</p>} {/* Display error messages */}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
       <button onClick={() => setIsRegistering(!isRegistering)}>
         {isRegistering ? 'Already have an account? Login' : "Don't have an account? Register"}
       </button>

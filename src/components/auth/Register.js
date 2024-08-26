@@ -1,32 +1,34 @@
 import React, { useState } from 'react';
-import { auth } from '../../firebaseConfig';
+import { auth, db } from '../../firebaseConfig'; // Import Firebase auth and Firestore db
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
-import { db } from '../../firebaseConfig';
-import './styles/Register.css';
+import { doc, setDoc } from 'firebase/firestore'; // Import Firestore functions
 
 const Register = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [username, setUsername] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState(''); // State for storing email input
+  const [password, setPassword] = useState(''); // State for storing password input
+  const [username, setUsername] = useState(''); // State for storing username input
+  const [error, setError] = useState(''); // State for storing error messages
 
   const handleRegister = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent form submission from reloading the page
     try {
+      // Create the user with email and password
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
+      // Update the user's profile with the username
       await updateProfile(user, { displayName: username });
 
+      // Save additional user data to Firestore automatically using the UID as the document ID
       await setDoc(doc(db, 'users', user.uid), {
-        username,
-        email
+        uid: user.uid,
+        username: username,
+        email: email
       });
 
       alert('Registration successful! You can now log in.');
     } catch (error) {
-      setError(error.message);
+      setError(error.message); // Set error message if registration fails
     }
   };
 
@@ -35,38 +37,35 @@ const Register = () => {
       <h2>Register</h2>
       <form onSubmit={handleRegister}>
         <div>
-          <label htmlFor="username">Username:</label>
+          <label>Username:</label>
           <input
             type="text"
-            id="username"
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={(e) => setUsername(e.target.value)} // Update username state on change
             required
           />
         </div>
         <div>
-          <label htmlFor="email">Email:</label>
+          <label>Email:</label>
           <input
             type="email"
-            id="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)} // Update email state on change
             required
           />
         </div>
         <div>
-          <label htmlFor="password">Password:</label>
+          <label>Password:</label>
           <input
             type="password"
-            id="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)} // Update password state on change
             required
           />
         </div>
         <button type="submit">Register</button>
       </form>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p style={{ color: 'red' }}>{error}</p>} {/* Display error messages */}
     </div>
   );
 };
