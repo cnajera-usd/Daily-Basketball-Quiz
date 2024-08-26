@@ -1,27 +1,24 @@
 import React, { useState } from 'react';
-import { auth } from '../../firebaseConfig'; // Import Firebase auth
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'; // Import updateProfile to update user profile
-import { doc, setDoc } from 'firebase/firestore'; // Import Firestore functions
-import { db } from '../../firebaseConfig'; // Import Firestore database
+import { auth } from '../../firebaseConfig';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
+import { db } from '../../firebaseConfig';
 import './styles/Register.css';
 
 const Register = () => {
-  const [email, setEmail] = useState(''); // State for storing email input
-  const [password, setPassword] = useState(''); // State for storing password input
-  const [username, setUsername] = useState(''); // State for storing username input (New state)
-  const [error, setError] = useState(''); // State for storing error messages
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
+  const [error, setError] = useState('');
 
   const handleRegister = async (e) => {
-    e.preventDefault(); // Prevent form submission from reloading the page
+    e.preventDefault();
     try {
-      // Create the user with email and password
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // Update the user's profile with the username (New code)
       await updateProfile(user, { displayName: username });
 
-      // Save additional user data to Firestore (Optional, new code)
       await setDoc(doc(db, 'users', user.uid), {
         username,
         email
@@ -29,7 +26,7 @@ const Register = () => {
 
       alert('Registration successful! You can now log in.');
     } catch (error) {
-      setError(error.message); // Set error message if registration fails
+      setError(error.message);
     }
   };
 
@@ -37,36 +34,42 @@ const Register = () => {
     <div className="container">
       <h2>Register</h2>
       <form onSubmit={handleRegister}>
-        <div style={{ border: '2px solid red '}}>
-          <label>Username:</label> {/* New field for username */}
+        <div>
+          <label htmlFor="username">Username:</label>
           <input
             type="text"
+            id="username"
+            name="username"
             value={username}
-            onChange={(e) => setUsername(e.target.value)} // Update username state on change
+            onChange={(e) => setUsername(e.target.value)}
             required
           />
         </div>
         <div>
-          <label>Email:</label>
+          <label htmlFor="email">Email:</label>
           <input
             type="email"
+            id="email"
+            name="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)} // Update email state on change
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>
         <div>
-          <label>Password:</label>
+          <label htmlFor="password">Password:</label>
           <input
             type="password"
+            id="password"
+            name="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)} // Update password state on change
+            onChange={(e) => setPassword(e.target.value)}
             required
           />
         </div>
         <button type="submit">Register</button>
       </form>
-      {error && <p style={{ color: 'red' }}>{error}</p>} {/* Display error messages */}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
   );
 };
