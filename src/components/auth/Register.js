@@ -37,7 +37,7 @@ const Register = () => {
     <div className="container">
       <h2>Register</h2>
       <form onSubmit={handleRegister}>
-        <div>
+        <div style={{ border: '2px solid red '}}>
           <label>Username:</label> {/* New field for username */}
           <input
             type="text"
