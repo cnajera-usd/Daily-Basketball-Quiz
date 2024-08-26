@@ -1,5 +1,3 @@
-/*
-
 
 import React, { useState } from 'react';
 import { auth } from '../../firebaseConfig'; // Import Firebase auth
@@ -51,4 +49,3 @@ const Login = () => {
 
 export default Login;
 
-*/
