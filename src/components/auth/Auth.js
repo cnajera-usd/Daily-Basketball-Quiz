@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { auth } from '../../firebaseConfig'; // Import Firebase auth
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth'; // Import updateProfile to update user profile
 import '../../styles/Auth.css';
+import { doc, setDoc } from 'firebase/firestore'; // Import Firestore functions
+import { db } from '../../firebaseConfig'; // Import Firestore database
 
 const Auth = () => {
   const [isRegistering, setIsRegistering] = useState(true);
@@ -16,8 +18,17 @@ const Auth = () => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
+
       await updateProfile(user, { displayName: username }); // Update user profile with username
+      
+      await setDoc(doc(db, 'users', user.uid), {
+        uid: user.uid,
+        username: username,
+        email: email
+      });
+      
       alert('Registration successful! You can now log in.');
+
       setEmail('');
       setPassword('');
       setUsername(''); // Clear username input field
