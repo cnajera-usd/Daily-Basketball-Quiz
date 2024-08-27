@@ -79,9 +79,9 @@ const Register = () => {
         <div>
           <label>Password:</label>
           <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)} // Update password state on change
+            type={showPassword ? "text" : "password"} // toggle between password and text input type
+            value={confirmPassword}
+            onChange={(e) => setconfirmPassword(e.target.value)} // Update password state on change
             required
           />
         </div>
