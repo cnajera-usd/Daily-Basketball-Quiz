@@ -9,6 +9,7 @@ import Auth from './components/auth/Auth';
 import './styles/theme.css';
 import { auth } from "./firebaseConfig"; 
 import { onAuthStateChanged } from "firebase/auth";
+import Register from './components/auth/Register';
 
 function App() {
 
@@ -38,6 +39,7 @@ function App() {
           <Route path="/leaderboard" element={<LeaderboardPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path='/register' element={<Register />} />
         </Routes>
       </div>
     </Router>
