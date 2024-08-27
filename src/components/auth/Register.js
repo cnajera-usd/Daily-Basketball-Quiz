@@ -6,10 +6,10 @@ import { doc, setDoc } from 'firebase/firestore'; // Import Firestore functions
 const Register = () => {
   const [email, setEmail] = useState(''); // State for storing email input
   const [password, setPassword] = useState(''); // State for storing password input
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState(''); // State for storing confirm password input
   const [username, setUsername] = useState(''); // State for storing username input
   const [error, setError] = useState(''); // State for storing error messages
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // State for managing password visibility
 
   const handleRegister = async (e) => {
     e.preventDefault(); // Prevent form submission from reloading the page
@@ -63,27 +63,32 @@ const Register = () => {
         </div>
         <div>
           <label>Password:</label>
-          <input
-            type={showPassword ? "text" : "password"} // Toggle between password and text input type
-            value={password}
-            onChange={(e) => setPassword(e.target.value)} // update password state on change
-            required
-          />
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)} // toggle passsword state on change
-          >
-            {showPassword ? "Hide" : "Show"} Password
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <input
+              type={showPassword ? "text" : "password"} // Toggle between password and text input type
+              value={password}
+              onChange={(e) => setPassword(e.target.value)} // update password state on change
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)} // toggle password visibility
+              style={{ marginLeft: '10px' }} // Add some space between input and button
+            >
+              {showPassword ? "Hide" : "Show"} Password
+            </button>
+          </div>
         </div>
         <div>
-          <label>Password:</label>
-          <input
-            type={showPassword ? "text" : "password"} // toggle between password and text input type
-            value={confirmPassword}
-            onChange={(e) => setconfirmPassword(e.target.value)} // Update password state on change
-            required
-          />
+          <label>Confirm Password:</label>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <input
+              type={showPassword ? "text" : "password"} // toggle between password and text input type
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)} // Update confirm password state on change
+              required
+            />
+          </div>
         </div>
         <button type="submit">Register</button>
       </form>
@@ -93,3 +98,4 @@ const Register = () => {
 };
 
 export default Register;
+
