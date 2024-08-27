@@ -6,11 +6,18 @@ import { doc, setDoc } from 'firebase/firestore'; // Import Firestore functions
 const Register = () => {
   const [email, setEmail] = useState(''); // State for storing email input
   const [password, setPassword] = useState(''); // State for storing password input
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [username, setUsername] = useState(''); // State for storing username input
   const [error, setError] = useState(''); // State for storing error messages
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleRegister = async (e) => {
     e.preventDefault(); // Prevent form submission from reloading the page
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+    
     try {
       // Create the user with email and password
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -53,6 +60,21 @@ const Register = () => {
             onChange={(e) => setEmail(e.target.value)} // Update email state on change
             required
           />
+        </div>
+        <div>
+          <label>Password:</label>
+          <input
+            type={showPassword ? "text" : "password"} // Toggle between password and text input type
+            value={password}
+            onChange={(e) => setPassword(e.target.value)} // update password state on change
+            required
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)} // toggle passsword state on change
+          >
+            {showPassword ? "Hide" : "Show"} Password
+          </button>
         </div>
         <div>
           <label>Password:</label>
