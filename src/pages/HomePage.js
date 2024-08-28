@@ -1,5 +1,7 @@
 import React from 'react';
 import '../styles/HomePage.css';
+import { Link } from 'react-router-dom';
+
 
 const HomePage = () => {
   return (
@@ -19,7 +21,8 @@ const HomePage = () => {
         </p>
       </div>
       <div className="cta">
-        <button className="btn-primary">Take Today's Quiz</button>
+        <Link to="/quiz"></Link>
+          <button className="btn-primary">Take Today's Quiz</button>
       </div>
     </div>
   );
