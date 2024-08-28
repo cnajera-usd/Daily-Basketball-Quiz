@@ -40,32 +40,38 @@ const Register = () => {
   };
 
   return (
-    <div className="container">
+    <div className="form-container">
       <h2>Register</h2>
       <form onSubmit={handleRegister}>
-        <div>
-          <label>Username:</label>
+        <div className="form-group">
+          <label htmlFor="username">Username:</label>
           <input
             type="text"
+            id="username"
+            name="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)} // Update username state on change
             required
           />
         </div>
-        <div>
-          <label>Email:</label>
+        <div className="form-group">
+          <label htmlFor="email">Email:</label>
           <input
             type="email"
+            id="email"
+            name="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)} // Update email state on change
             required
           />
         </div>
-        <div>
-          <label>Password:</label>
+        <div className="form-group">
+          <label htmlFor="password">Password:</label>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <input
               type={showPassword ? "text" : "password"} // Toggle between password and text input type
+              id="password"
+              name="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)} // update password state on change
               required
@@ -79,18 +85,18 @@ const Register = () => {
             </button>
           </div>
         </div>
-        <div>
-          <label>Confirm Password:</label>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <input
-              type={showPassword ? "text" : "password"} // toggle between password and text input type
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)} // Update confirm password state on change
-              required
-            />
-          </div>
+        <div className="form-group">
+          <label htmlFor="confirm-password">Confirm Password:</label>
+          <input
+            type={showPassword ? "text" : "password"} // toggle between password and text input type
+            id="confirm-password"
+            name="confirm-password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)} // Update confirm password state on change
+            required
+          />
         </div>
-        <button type="submit">Register</button>
+        <button className="btn-primary" type="submit">Register</button>
       </form>
       {error && <p style={{ color: 'red' }}>{error}</p>} {/* Display error messages */}
     </div>

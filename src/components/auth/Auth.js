@@ -65,34 +65,40 @@ const Auth = () => {
   };
 
   return (
-    <div className="container">
+    <div className="form-container">
       <h2>{isRegistering ? 'Register' : 'Login'}</h2>
       <form onSubmit={isRegistering ? handleRegister : handleLogin}>
         {isRegistering && ( // Only show username input if registering
-          <div>
-            <label>Username:</label>
+          <div className="form-group">
+            <label htmlFor="username">Username:</label>
             <input
               type="text"
+              id="username"
+              name="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
             />
           </div>
         )}
-        <div>
-          <label>Email:</label>
+        <div className="form-group">
+          <label htmlFor="email">Email:</label>
           <input
             type="email"
+            id="email"
+            name="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>
-        <div>
-          <label>Password:</label>
+        <div className="form-group">
+          <label htmlFor="password">Password:</label>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <input
               type={showPassword ? 'text' : 'password'}
+              id="password"
+              name="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -107,22 +113,24 @@ const Auth = () => {
           </div>
         </div>
         {isRegistering && ( // Only show confirm password if registering
-          <div>
-            <label>Confirm Password:</label>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <input
-                type={showPassword ? 'text' : 'password'}
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-              />
-            </div>
+          <div className="form-group">
+            <label htmlFor="confirm-password">Confirm Password:</label>
+            <input
+              type={showPassword ? 'text' : 'password'}
+              id="confirm-password"
+              name="confirm-password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
           </div>
         )}
-        <button type="submit">{isRegistering ? 'Register' : 'Login'}</button>
+        <button className="btn-primary" type="submit">
+          {isRegistering ? 'Register' : 'Login'}
+        </button>
       </form>
       {error && <p style={{ color: 'red' }}>{error}</p>}
-      <button onClick={() => setIsRegistering(!isRegistering)}>
+      <button className="toggle-btn" onClick={() => setIsRegistering(!isRegistering)}>
         {isRegistering ? 'Already have an account? Login' : "Don't have an account? Register"}
       </button>
     </div>
@@ -130,4 +138,3 @@ const Auth = () => {
 };
 
 export default Auth;
-

@@ -21,8 +21,9 @@ const HomePage = () => {
         </p>
       </div>
       <div className="cta">
-        <Link to="/quiz"></Link>
+        <Link to="/quiz">
           <button className="btn-primary">Take Today's Quiz</button>
+          </Link>
       </div>
     </div>
   );
