@@ -13,20 +13,22 @@ import Register from './components/auth/Register';
 
 function App() {
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        console.log("User is signed in:", user);
-        // update app to state to reflect that user is signed in
+  const [user, setUser] = React.useState(null);
 
-      } else {
-        console.log("No user is signed in");
-        // Update app to state to reflect that no user is signed in
-      }
+useEffect(() => {
+  const unsubscribe = onAuthStateChanged(auth, (user) => {
+    if (user) {
+      console.log("User is signed in:", user);
+      setUser(user); // Update state with user info
+    } else {
+      console.log("No user is signed in");
+      setUser(null); // Set state to null when no user is signed in
+    }
   });
 
   return () => unsubscribe();
 }, []);
+
   
   
   return (
@@ -35,7 +37,7 @@ function App() {
         <Navbar /> {/* Use the Navbar component here */}
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/Quiz" element={<QuizPage />} />
+          <Route path="/quiz" element={<QuizPage />} />
           <Route path="/leaderboard" element={<LeaderboardPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/auth" element={<Auth />} />
