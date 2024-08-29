@@ -54,7 +54,8 @@ const QuizPage = () => {
   useEffect(() => {
       if (hasCompletedQuiz) {
           const userId = auth.currentUser ? auth.currentUser.uid : "anonymous";
-          saveQuizScore(userId, score, totalPossibleScore, new Date().toLocaleDateString('en-CA'));
+          const username = auth.currentUser ? auth.currentUser.displayName || "Unknown User" : "anonymous";
+          saveQuizScore(userId, username, score, totalPossibleScore, new Date().toLocaleDateString('en-CA'));
       }
   }, [hasCompletedQuiz, score, totalPossibleScore]);
 
