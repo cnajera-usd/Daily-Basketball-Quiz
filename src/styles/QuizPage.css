@@ -1,5 +1,20 @@
-/* QuizPage.css */
+.answer-button.correct {
+    background-color: #4CAF50; /* Green background for correct answers */
+    color: white;
+}
 
+.answer-button.incorrect {
+    background-color: #F44336; /* Red background for incorrect answers */
+    color: white;
+}
+
+/* Optional: make correct and incorrect answers have a slight border for better visibility */
+.answer-button.correct,
+.answer-button.incorrect {
+    border: 2px solid #000; /* Optional: a darker border to make the buttons stand out more */
+}
+
+/* Existing styles */
 .quiz-container {
     text-align: center;
     margin-top: 20px;
@@ -37,7 +52,6 @@
 .answer-button:hover {
     background-color: #f28b82;
 }
-
 
 .answer-button.selected {
     background-color: #92140c;

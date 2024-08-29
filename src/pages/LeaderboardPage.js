@@ -1,22 +1,41 @@
-// src/pages/LeaderboardPage.js
+import React, { useState, useEffect } from 'react';
+import { db } from '../firebaseConfig'; // Make sure firebaseConfig is correctly configured
+import { collection, getDocs, orderBy, limit, query } from 'firebase/firestore';
+import '../styles/Leaderboard.css';
 
-import React from 'react';
-import './Leaderboard.css'; // Make sure this file exists
-import UserScores from '../components/UserScores';
+const LeaderboardPage = () => {
+    const [scores, setScores] = useState([]);
 
-const LeaderboardPage = ({ scores, currentUser }) => {
+    useEffect(() => {
+        const fetchScores = async () => {
+            try {
+                const scoresQuery = query(
+                    collection(db, 'quizScores'),
+                    orderBy('score', 'desc'),  // Order by score in descending order
+                    limit(10)  // Limit to top 10 scores
+                );
+                const querySnapshot = await getDocs(scoresQuery);
+                const scoresList = querySnapshot.docs.map(doc => doc.data());
+                setScores(scoresList);
+            } catch (error) {
+                console.error('Error fetching scores:', error);
+            }
+        };
+
+        fetchScores();
+    }, []);
+
     return (
         <div className="leaderboard">
             <h2>Leaderboard</h2>
             <h3>Top Scores</h3>
             <ul>
                 {scores.map((score, index) => (
-                    <li key={score.id} className={`leaderboard-item ${score.username === currentUser ? 'highlight' : ''}`}>
+                    <li key={index} className="leaderboard-item">
                         <span className="rank">{index + 1}</span>
-                        <img src={score.userAvatar || 'default-avatar.png'} alt="User Avatar" className="avatar" />
                         <span className="username">{score.username || 'Unknown User'}</span>
                         <span className="score">{score.score}/10</span>
-                        <span className="date">{score.date}</span>
+                        <span className="date">{new Date(score.quizDate).toLocaleDateString()}</span>
                     </li>
                 ))}
             </ul>
@@ -25,4 +44,3 @@ const LeaderboardPage = ({ scores, currentUser }) => {
 };
 
 export default LeaderboardPage;
-

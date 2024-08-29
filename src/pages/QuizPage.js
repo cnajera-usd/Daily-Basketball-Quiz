@@ -12,7 +12,7 @@ const QuizPage = () => {
   const [quizQuestions, setQuizQuestions] = useState([]);
   const [answers, setAnswers] = useState({});
   const [score, setScore] = useState(0);
-  const [totalPossibleScore, setTotalPossibleScore] = useState(0); // State for total possible score
+  const [totalPossibleScore, setTotalPossibleScore] = useState(0); 
   const [showScoreModal, setShowScoreModal] = useState(false);
   const [hasCompletedQuiz, setHasCompletedQuiz] = useState(false); 
 
@@ -23,7 +23,6 @@ const QuizPage = () => {
               const questions = quizData[today]?.questions || [];
               setQuizQuestions(questions); 
 
-              // Calculate total possible score based on the quiz's difficulties
               let possibleScore = 0;
               questions.forEach(question => {
                   switch (question.difficulty) {
@@ -40,10 +39,10 @@ const QuizPage = () => {
                           possibleScore += 4;
                           break;
                       default:
-                          possibleScore += 1; // Fallback if difficulty is undefined
+                          possibleScore += 1; 
                   }
               });
-              setTotalPossibleScore(possibleScore); // Set total possible score
+              setTotalPossibleScore(possibleScore); 
           } catch (error) {
               console.error('Error fetching quiz data:', error);
           }
@@ -52,7 +51,6 @@ const QuizPage = () => {
       fetchQuizData();
   }, []);
 
-  // New useEffect to handle saving the score once the quiz is completed
   useEffect(() => {
       if (hasCompletedQuiz) {
           const userId = auth.currentUser ? auth.currentUser.uid : "anonymous";
@@ -62,15 +60,29 @@ const QuizPage = () => {
 
   const handleAnswerClick = (index) => {
     setSelectedAnswerIndex(index);
-    setFeedback(null); // Clear previous feedback
+    setFeedback(null); 
   };
 
   const handleNextQuestion = () => {
       if (currentQuestionIndex < quizQuestions.length - 1) {
           const nextIndex = currentQuestionIndex + 1;
-          setCurrentQuestionIndex(nextIndex);
-          setSelectedAnswerIndex(null); // Reset the selected answer
-          setFeedback(null); // Clear feedback for the new question
+
+          // Save current answer before moving to next question
+          setAnswers((prevAnswers) => ({
+            ...prevAnswers,
+            [currentQuestionIndex]: {
+                selectedAnswerIndex,
+                feedback
+            },
+        }));
+
+
+            setCurrentQuestionIndex(nextIndex);
+
+            // Retrieve and set the previously saved answer for next question
+            const nextAnswer = answers[nextIndex];
+            setSelectedAnswerIndex(nextAnswer ? nextAnswer.selectedAnswerIndex : null); 
+            setFeedback(nextAnswer ? nextAnswer.feedback : null); 
       }
   };
 
@@ -78,8 +90,11 @@ const QuizPage = () => {
       if (currentQuestionIndex > 0) {
           const prevIndex = currentQuestionIndex - 1;
           setCurrentQuestionIndex(prevIndex);
-          setSelectedAnswerIndex(answers[prevIndex]?.selectedAnswerIndex || null);
-          setFeedback(answers[prevIndex]?.feedback || null);
+
+          // Retrieve and set the previously saved answer for the previous question
+          const prevAnswer = answers[prevIndex];
+          setSelectedAnswerIndex(prevAnswer ? prevAnswer.selectedAnswerIndex : null);
+          setFeedback(prevAnswer ? prevAnswer.feedback : null);
       }
   };
 
@@ -91,6 +106,7 @@ const QuizPage = () => {
       if (hasCompletedQuiz) return;
 
       const isCorrect = selectedAnswerIndex === quizQuestions[currentQuestionIndex]?.correctAnswerIndex;
+
 
       setAnswers((prevAnswers) => ({
           ...prevAnswers,
@@ -142,20 +158,26 @@ const QuizPage = () => {
                           {quizQuestions[currentQuestionIndex]?.question}
                       </p>
                       <div className="answer-options">
-                          {quizQuestions[currentQuestionIndex]?.answers.map((answer, index) => (
+                          {quizQuestions[currentQuestionIndex]?.answers.map((answer, index) => {
+                            const correctAnswerIndex = quizQuestions[currentQuestionIndex]?.correctAnswerIndex;
+                            const isCorrect = selectedAnswerIndex === correctAnswerIndex;
+                            
+                            return (
                               <button
                                   key={index}
-                                  className={`answer-button ${selectedAnswerIndex === index ? 'selected' : ''}`}
+                                  // New logic to handle classes for correct, incorrect, and selected answers
+                                  className={`answer-button ${selectedAnswerIndex === index ? 'selected' : ''} ${feedback && index === quizQuestions[currentQuestionIndex]?.correctAnswerIndex ? 'correct' : ''} ${feedback && selectedAnswerIndex === index && !isCorrect ? 'incorrect' : ''}`}
                                   onClick={() => handleAnswerClick(index)}
                                   disabled={feedback !== null} 
                               >
                                   {answer}
                               </button>
-                          ))}
+                            );
+                        })}
                       </div>
                   </div>
                   {feedback && (
-                      <p className="feedback">{feedback}</p>
+                      <p className={`feedback ${feedback.toLowerCase()}`}>{feedback}</p> // Updated feedback styling logic
                   )}
                   <div className="action-buttons">
                       {currentQuestionIndex > 0 && (

@@ -1,1 +1,43 @@
+/* src/pages/Leaderboard.css */
+
+.leaderboard {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.leaderboard h2, .leaderboard h3 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.leaderboard-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #f8f9fa;
+    transition: background-color 0.3s ease;
+}
+
+.rank {
+    font-weight: bold;
+    width: 30px;
+    text-align: center;
+}
+
+.username {
+    flex-grow: 1;
+    font-weight: bold;
+}
+
+.score {
+    font-size: 1.2em;
+    margin-right: 10px;
+}
+
+.date {
+    color: #888;
+}
 
