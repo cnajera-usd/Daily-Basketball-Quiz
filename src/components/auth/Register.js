@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { auth, db } from '../../firebaseConfig'; // Import Firebase auth and Firestore db
+import { auth } from '../../firebaseConfig'; // Import Firebase auth and Firestore db
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore'; // Import Firestore functions
 import { createUserProfile } from '../../services/userService';
 
 const Register = () => {
@@ -27,19 +26,13 @@ const Register = () => {
       // Update the user's profile with the username
       await updateProfile(user, { displayName: username });
 
-      // Save additional user data to Firestore automatically using the UID as the document ID
-      await setDoc(doc(db, 'users', user.uid), {
-        uid: user.uid,
-        username: username,
-        email: email
-      });
-
-      // Call the createUserProfile function to save the username mapping
+      // call the createUserProfile function to save the user profile
       await createUserProfile({
         uid: user.uid,
         username: username,
         email: email
       });
+
 
       alert('Registration successful! You can now log in.');
     } catch (error) {

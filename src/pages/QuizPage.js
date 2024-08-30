@@ -4,6 +4,7 @@ import quizData from '../data/quizData.json';
 import ScoreModal from '../components/ScoreModal'; // Adjust path as necessary
 import { auth } from '../firebaseConfig';
 import { saveQuizScore } from '../services/quizScoreService';
+import moment from 'moment-timezone';
 
 const QuizPage = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -51,13 +52,19 @@ const QuizPage = () => {
       fetchQuizData();
   }, []);
 
-  useEffect(() => {
-      if (hasCompletedQuiz) {
-          const userId = auth.currentUser ? auth.currentUser.uid : "anonymous";
-          const username = auth.currentUser ? auth.currentUser.displayName || "Unknown User" : "anonymous";
-          saveQuizScore(userId, username, score, totalPossibleScore, new Date().toLocaleDateString('en-CA'));
-      }
-  }, [hasCompletedQuiz, score, totalPossibleScore]);
+  // Remove this line since it's no longer used
+// const quizDate = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' });
+
+    useEffect(() => {
+        if (hasCompletedQuiz) {
+            const userId = auth.currentUser ? auth.currentUser.uid : "anonymous";
+            const username = auth.currentUser ? auth.currentUser.displayName || "Unknown User" : "anonymous";
+            const quizDate = moment.tz('America/Los_Angeles').format('YYYY-MM-DD');
+
+            saveQuizScore(userId, username, score, totalPossibleScore, quizDate);
+        }
+    }, [hasCompletedQuiz, score, totalPossibleScore,]);
+
 
   const handleAnswerClick = (index) => {
     setSelectedAnswerIndex(index);
@@ -77,13 +84,12 @@ const QuizPage = () => {
             },
         }));
 
+        setCurrentQuestionIndex(nextIndex);
 
-            setCurrentQuestionIndex(nextIndex);
-
-            // Retrieve and set the previously saved answer for next question
-            const nextAnswer = answers[nextIndex];
-            setSelectedAnswerIndex(nextAnswer ? nextAnswer.selectedAnswerIndex : null); 
-            setFeedback(nextAnswer ? nextAnswer.feedback : null); 
+        // Retrieve and set the previously saved answer for next question
+        const nextAnswer = answers[nextIndex];
+        setSelectedAnswerIndex(nextAnswer ? nextAnswer.selectedAnswerIndex : null); 
+        setFeedback(nextAnswer ? nextAnswer.feedback : null); 
       }
   };
 
@@ -107,7 +113,6 @@ const QuizPage = () => {
       if (hasCompletedQuiz) return;
 
       const isCorrect = selectedAnswerIndex === quizQuestions[currentQuestionIndex]?.correctAnswerIndex;
-
 
       setAnswers((prevAnswers) => ({
           ...prevAnswers,

@@ -12,8 +12,8 @@ export const createUserProfile = async (user) => {
         });
 
         // Create a mapping in the usernames collection
-        await setDoc(doc(db, "usernames", user.username), {
-            uid: user.uid
+        await setDoc(doc(db, "uids", user.uid), {
+            username: user.username
         });
 
         console.log("User profile and username mapping created successfully!");
