@@ -5,6 +5,8 @@ import ScoreModal from '../components/ScoreModal'; // Adjust path as necessary
 import { auth } from '../firebaseConfig';
 import { saveQuizScore } from '../services/quizScoreService';
 import moment from 'moment-timezone';
+import { getDoc, doc } from 'firebase/firestore';
+import { db } from '../firebaseConfig';
 
 const QuizPage = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -16,6 +18,7 @@ const QuizPage = () => {
   const [totalPossibleScore, setTotalPossibleScore] = useState(0); 
   const [showScoreModal, setShowScoreModal] = useState(false);
   const [hasCompletedQuiz, setHasCompletedQuiz] = useState(false); 
+  const [quizAttempted, setQuizAttempted] = useState(false);
 
   useEffect(() => {
       const fetchQuizData = async () => {
@@ -43,7 +46,14 @@ const QuizPage = () => {
                           possibleScore += 1; 
                   }
               });
-              setTotalPossibleScore(possibleScore); 
+              setTotalPossibleScore(possibleScore);
+
+              // check if the user has already taken the quiz today
+              const userId = auth.currentUser ? auth.currentUser.uid : "anonymous";
+              const attemptDoc = await getDoc(doc(db, 'quizattempts', `${userId}_${today}`));
+              if (attemptDoc.exsists()) {
+                setQuizAttempted(true);
+              }
           } catch (error) {
               console.error('Error fetching quiz data:', error);
           }
@@ -157,7 +167,9 @@ const QuizPage = () => {
   return (
       <div className="quiz-container">
           <h1 className="quiz-title">Daily NBA Quiz</h1>
-          {quizQuestions.length > 0 ? (
+          {quizAttempted ? (
+                <p>You have already taken today's quiz. Please come back tomorrow when a new quiz will be available!</p>
+          ) : quizQuestions.length > 0 ? (
               <div>
                   <div className="question-section">
                       <p className="question-text">

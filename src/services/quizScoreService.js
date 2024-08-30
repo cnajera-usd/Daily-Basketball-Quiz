@@ -1,6 +1,6 @@
 // src/services/quizScoreService.js
 import { db } from '../firebaseConfig'; // Import Firebase Firestore configuration
-import { collection, addDoc } from 'firebase/firestore'; // Import Firestore functions
+import { collection, addDoc, getDoc, setDoc, doc } from 'firebase/firestore'; // Import Firestore functions
 
 // Function to save the quiz score to Firestore
 export const saveQuizScore = async (userId, username, score, totalScore, quizDate) => {
@@ -15,6 +15,14 @@ export const saveQuizScore = async (userId, username, score, totalScore, quizDat
             timestamp: new Date(), // Timestamp of when the score was saved
         });
         console.log('Quiz score saved successfully!');
+
+        // Track the quiz attempt by saving it to the quizAttempts collection
+        const attemptRef = doc(db, 'quizAttempts', `${userId}_${quizDate}`);
+        await setDoc(attemptRef, {
+            userId,
+            quizDate,
+            timestamp: new Date(),
+        });
     } catch (error) {
         console.error('Error saving quiz score:', error);
     }

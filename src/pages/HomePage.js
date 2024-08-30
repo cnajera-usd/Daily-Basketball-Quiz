@@ -14,7 +14,7 @@ const HomePage = () => {
       <div className="introduction">
         <h2>About the Daily NBA Quiz</h2>
         <p>
-          Welcome to the Daily NBA Quiz! Every day, we present you with a fresh quiz featuring 10 new questions about the NBA. From historical moments and legendary players to current stats and team trivia, there's always something new to learn and explore. Which is the entire purpose of this website; this website was created for people that want to many different ways to challenge or expand their NBA knowledge.
+          Welcome to the Daily NBA Quiz! Every day, we present you with a fresh quiz featuring 10 new questions about the NBA. From historical moments and legendary players to current stats and team trivia, there's always something new to learn and explore. Which is the entire purpose of this website; this website was created for people that want many different ways to challenge or expand their NBA knowledge.
         </p>
         <p>
           Whether you're a casual fan or a hardcore basketball sicko, our quizzes are designed to challenge and entertain. Compete against your friends, climb the leaderboard, and improve your understanding of the game. Join our community of passionate basketball fans and take your NBA knowledge to the next level!
