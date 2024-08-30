@@ -5,7 +5,7 @@ import ScoreModal from '../components/ScoreModal'; // Adjust path as necessary
 import { auth } from '../firebaseConfig';
 import { saveQuizScore } from '../services/quizScoreService';
 import moment from 'moment-timezone';
-import { getDoc, doc, setDoc} from 'firebase/firestore';
+import { getDoc, doc, setDoc } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 
 const QuizPage = () => {
@@ -53,14 +53,23 @@ const QuizPage = () => {
               const attemptDoc = await getDoc(doc(db, 'quizAttempts', `${userId}_${today}`));
               if (attemptDoc.exists()) {  // Corrected 'exsists' to 'exists'
                 setHasAttempted(true);  // Set the state to true if the quiz was already attempted
+                sessionStorage.setItem(`hasAttempted_${userId}_${today}`, 'true');
               }
           } catch (error) {
               console.error('Error fetching quiz data:', error);
           }
       };
 
+      // check sessionStorage for 'hasAttempted'
+      const userId = auth.currentUser ? auth.currentUser.uid : "anonymous";
+      const today = new Date().toLocaleDateString('en-CA');
+      if (sessionStorage.getItem(`hasAttempted_${userId}_${today}`) === 'true') {
+        setHasAttempted(true);
+      } else {
+    
       fetchQuizData();
-  }, []);
+      }
+  }, []); // Added empty dependency array to ensure this effect only runs on mount
 
   useEffect(() => {
     const saveAttempt = async () => {  // Mark the function as async
@@ -83,8 +92,7 @@ const QuizPage = () => {
 
     saveAttempt(); // Call the async function
 
-}, [hasCompletedQuiz, score, totalPossibleScore]);
-
+}, [hasCompletedQuiz, score, totalPossibleScore]); // Make sure to include only necessary dependencies
 
   const handleAnswerClick = (index) => {
     setSelectedAnswerIndex(index);
@@ -246,4 +254,3 @@ const QuizPage = () => {
 };
 
 export default QuizPage;
-
