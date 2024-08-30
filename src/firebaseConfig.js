@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+import { getAnalytics, logEvent} from "firebase/analytics";
 import { getFirestore } from "firebase/firestore"; // Import Firestore if you're using it
 import { getAuth, setPersistence, browserLocalPersistence } from "firebase/auth";
 
@@ -20,6 +20,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
+logEvent(analytics, 'notification_received'); // Example of using analytics to log an event
 const auth = getAuth(app);  // Initialize Firebase Auth
 const db = getFirestore(app); // Initialize Firestore (if using Firestore)
 

@@ -1,6 +1,6 @@
 // src/services/quizScoreService.js
 import { db } from '../firebaseConfig'; // Import Firebase Firestore configuration
-import { collection, addDoc, getDoc, setDoc, doc } from 'firebase/firestore'; // Import Firestore functions
+import { collection, addDoc, setDoc, doc } from 'firebase/firestore'; // Import Firestore functions
 
 // Function to save the quiz score to Firestore
 export const saveQuizScore = async (userId, username, score, totalScore, quizDate) => {

@@ -5,7 +5,7 @@ import ScoreModal from '../components/ScoreModal'; // Adjust path as necessary
 import { auth } from '../firebaseConfig';
 import { saveQuizScore } from '../services/quizScoreService';
 import moment from 'moment-timezone';
-import { getDoc, doc } from 'firebase/firestore';
+import { getDoc, doc, setDoc} from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 
 const QuizPage = () => {
@@ -18,7 +18,7 @@ const QuizPage = () => {
   const [totalPossibleScore, setTotalPossibleScore] = useState(0); 
   const [showScoreModal, setShowScoreModal] = useState(false);
   const [hasCompletedQuiz, setHasCompletedQuiz] = useState(false); 
-  const [quizAttempted, setQuizAttempted] = useState(false);
+  const [hasAttempted, setHasAttempted] = useState(false);  // New state to track if the quiz has been attempted
 
   useEffect(() => {
       const fetchQuizData = async () => {
@@ -48,11 +48,11 @@ const QuizPage = () => {
               });
               setTotalPossibleScore(possibleScore);
 
-              // check if the user has already taken the quiz today
+              // Check if the user has already taken the quiz today
               const userId = auth.currentUser ? auth.currentUser.uid : "anonymous";
-              const attemptDoc = await getDoc(doc(db, 'quizattempts', `${userId}_${today}`));
-              if (attemptDoc.exsists()) {
-                setQuizAttempted(true);
+              const attemptDoc = await getDoc(doc(db, 'quizAttempts', `${userId}_${today}`));
+              if (attemptDoc.exists()) {  // Corrected 'exsists' to 'exists'
+                setHasAttempted(true);  // Set the state to true if the quiz was already attempted
               }
           } catch (error) {
               console.error('Error fetching quiz data:', error);
@@ -62,18 +62,28 @@ const QuizPage = () => {
       fetchQuizData();
   }, []);
 
-  // Remove this line since it's no longer used
-// const quizDate = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' });
-
-    useEffect(() => {
+  useEffect(() => {
+    const saveAttempt = async () => {  // Mark the function as async
         if (hasCompletedQuiz) {
             const userId = auth.currentUser ? auth.currentUser.uid : "anonymous";
             const username = auth.currentUser ? auth.currentUser.displayName || "Unknown User" : "anonymous";
             const quizDate = moment.tz('America/Los_Angeles').format('YYYY-MM-DD');
 
+            // Save the quiz attempt to Firestore with the username
+            await setDoc(doc(db, 'quizAttempts', `${userId}_${quizDate}`), {
+                userId: userId,
+                username: username, // Include the username here
+                quizDate: quizDate,
+                timestamp: new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })
+            });
+
             saveQuizScore(userId, username, score, totalPossibleScore, quizDate);
         }
-    }, [hasCompletedQuiz, score, totalPossibleScore,]);
+    };
+
+    saveAttempt(); // Call the async function
+
+}, [hasCompletedQuiz, score, totalPossibleScore]);
 
 
   const handleAnswerClick = (index) => {
@@ -167,7 +177,7 @@ const QuizPage = () => {
   return (
       <div className="quiz-container">
           <h1 className="quiz-title">Daily NBA Quiz</h1>
-          {quizAttempted ? (
+          {hasAttempted ? (  // Conditionally render based on whether the user has already taken the quiz
                 <p>You have already taken today's quiz. Please come back tomorrow when a new quiz will be available!</p>
           ) : quizQuestions.length > 0 ? (
               <div>
@@ -236,3 +246,4 @@ const QuizPage = () => {
 };
 
 export default QuizPage;
+

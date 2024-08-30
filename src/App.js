@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import QuizPage from './pages/QuizPage';
@@ -13,7 +13,7 @@ import Register from './components/auth/Register';
 
 function App() {
 
-  const [user, setUser] = React.useState(null);
+  const [user, setUser] = useState(null);
 
 useEffect(() => {
   const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -34,7 +34,7 @@ useEffect(() => {
   return (
     <Router>
       <div>
-        <Navbar /> {/* Use the Navbar component here */}
+        <Navbar user={user} /> {/* Use the Navbar component here */}
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/quiz" element={<QuizPage />} />
