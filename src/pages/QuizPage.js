@@ -60,7 +60,7 @@ const QuizPage = () => {
           }
       };
 
-      // check sessionStorage for 'hasAttempted'
+      // check sessionStorage for 'hasAttempted' to handle page refreshes
       const userId = auth.currentUser ? auth.currentUser.uid : "anonymous";
       const today = new Date().toLocaleDateString('en-CA');
       if (sessionStorage.getItem(`hasAttempted_${userId}_${today}`) === 'true') {
@@ -87,12 +87,15 @@ const QuizPage = () => {
             });
 
             saveQuizScore(userId, username, score, totalPossibleScore, quizDate);
+
+            // Set sessionStorage to mark the quiz as attempted
+            sessionStorage.setItem(`hasAttempted_${userId}_${quizDate}`, 'true');
         }
     };
 
     saveAttempt(); // Call the async function
 
-}, [hasCompletedQuiz, score, totalPossibleScore]); // Make sure to include only necessary dependencies
+    }, [hasCompletedQuiz, score, totalPossibleScore]); // Make sure to include only necessary dependencies
 
   const handleAnswerClick = (index) => {
     setSelectedAnswerIndex(index);
