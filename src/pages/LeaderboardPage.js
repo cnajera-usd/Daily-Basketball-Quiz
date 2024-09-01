@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { db } from '../firebaseConfig'; // Make sure firebaseConfig is correctly configured
 import { collection, getDocs, orderBy, limit, query } from 'firebase/firestore';
 import '../styles/Leaderboard.css';
+import moment from 'moment-timezone';
 
 const LeaderboardPage = () => {
     const [scores, setScores] = useState([]);
@@ -35,7 +36,8 @@ const LeaderboardPage = () => {
                         <span className="rank">{index + 1}</span>
                         <span className="username">{score.username || 'Unknown User'}</span>
                         <span className="score">{score.score}/10</span>
-                        <span className="date">{new Date(score.quizDate).toLocaleDateString()}</span>
+                        <span className="date">
+                            {moment.tz(score.timestamp.toDate(), 'America/Los-Angeles').format('MM/DD/YYYY')}</span>
                     </li>
                 ))}
             </ul>

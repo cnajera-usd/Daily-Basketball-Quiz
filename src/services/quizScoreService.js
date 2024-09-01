@@ -1,18 +1,24 @@
 // src/services/quizScoreService.js
 import { db } from '../firebaseConfig'; // Import Firebase Firestore configuration
 import { collection, addDoc, setDoc, doc } from 'firebase/firestore'; // Import Firestore functions
+import moment from 'moment-timezone';
 
 // Function to save the quiz score to Firestore
 export const saveQuizScore = async (userId, username, score, totalScore, quizDate) => {
     try {
         const quizCollection = collection(db, 'quizScores'); // Reference to the 'quizScores' collection
+        
+        // generate current timestamp in specified timezone
+        const currentTimestamp = moment().tz('America/Los_Angeles').format('YYYY-MM-DD HH:mm:ss');
+        
+        
         await addDoc(quizCollection, {
             userId, // User's ID
             username,
             score, // Score achieved in the quiz
             totalScore, // Total possible score in the quiz
             quizDate, // Date of the quiz
-            timestamp: new Date(), // Timestamp of when the score was saved
+            timestamp: currentTimestamp, // Timestamp of when the score was saved
         });
         console.log('Quiz score saved successfully!');
 
@@ -21,7 +27,7 @@ export const saveQuizScore = async (userId, username, score, totalScore, quizDat
         await setDoc(attemptRef, {
             userId,
             quizDate,
-            timestamp: new Date(),
+            timestamp: currentTimestamp,
         });
     } catch (error) {
         console.error('Error saving quiz score:', error);
