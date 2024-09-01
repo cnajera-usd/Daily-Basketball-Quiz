@@ -1,56 +1,126 @@
 {
-    "2024-08-30": {
-      "questions": [
-        {
-          "question": "Who won the MVP award in the 2019-2020 season?",
-          "answers": [
-            "LeBron James",
-            "Giannis Antetokounmpo",
-            "James Harden",
-            "Luka Dončić",
-            "Anthony Davis"
-          ],
-          "correctAnswerIndex": 1,
-          "difficulty": "Medium"  
-        },
-        {
-          "question": "Which team won the NBA Championship in the 2019-2020 season?",
-          "answers": [
-            "Golden State Warriors",
-            "Toronto Raptors",
-            "Los Angeles Lakers",
-            "Milwaukee Bucks",
-            "Houston Rockets"
-          ],
-          "correctAnswerIndex": 2,
-          "difficulty": "Easy" 
-        },
-        {
-            "question": "Which player holds the record for the most points in a single NBA game?",
-            "answers": [
-              "Kobe Bryant",
-              "Michael Jordan",
-              "Wilt Chamberlain",
-              "LeBron James",
-              "Shaquille O'Neal"
-            ],
-            "correctAnswerIndex": 2,
-            "difficulty": "Hard"  
-          },
-          {
-            "question": "Who led the league in steals per game in the 2023-2024 season?",
-            "answers": [
-                "SGA",
-                "Alex Caruso",
-                "Anthony Davis",
-                "De'Aaron Fox",
-                "Jrue Holiday"
-            ],
-            "correctAnswerIndex": 3,
-            "difficulty": "Challenging"
-          }
-      ]
-    }
+  "2024-08-31": {
+    "questions": [
+      {
+        "question": "Who won the NBA Rookie of the Year award in the 2022-2023 season?",
+        "answers": [
+          "Jalen Green",
+          "Scottie Barnes",
+          "Evan Mobley",
+          "Paolo Banchero",
+          "Cade Cunningham"
+        ],
+        "correctAnswerIndex": 3,
+        "difficulty": "Easy"
+      },
+      {
+        "question": "Which team was the runner-up in the 2022-2023 NBA Finals?",
+        "answers": [
+          "Boston Celtics",
+          "Miami Heat",
+          "Golden State Warriors",
+          "Phoenix Suns",
+          "Denver Nuggets"
+        ],
+        "correctAnswerIndex": 1,
+        "difficulty": "Easy"
+      },
+      {
+        "question": "Who was the MVP of the 2023 NBA All-Star Game?",
+        "answers": [
+          "Giannis Antetokounmpo",
+          "Jayson Tatum",
+          "Stephen Curry",
+          "LeBron James",
+          "Kevin Durant"
+        ],
+        "correctAnswerIndex": 1,
+        "difficulty": "Medium"
+      },
+      {
+        "question": "Which player broke the NBA single-season record for three-pointers made in 2022-2023?",
+        "answers": [
+          "Stephen Curry",
+          "Klay Thompson",
+          "Damian Lillard",
+          "James Harden",
+          "Buddy Hield"
+        ],
+        "correctAnswerIndex": 0,
+        "difficulty": "Medium"
+      },
+      {
+        "question": "Who holds the record for the most NBA championships as a player?",
+        "answers": [
+          "Michael Jordan",
+          "Bill Russell",
+          "Kareem Abdul-Jabbar",
+          "Magic Johnson",
+          "Tim Duncan"
+        ],
+        "correctAnswerIndex": 1,
+        "difficulty": "Hard"
+      },
+      {
+        "question": "Which player scored the most points in the 2023 NBA Playoffs?",
+        "answers": [
+          "Nikola Jokić",
+          "Jimmy Butler",
+          "Jayson Tatum",
+          "Devin Booker",
+          "Joel Embiid"
+        ],
+        "correctAnswerIndex": 0,
+        "difficulty": "Hard"
+      },
+      {
+        "question": "Which player had the highest PER (Player Efficiency Rating) in the 2023-2024 season?",
+        "answers": [
+          "Luka Dončić",
+          "Nikola Jokić",
+          "Giannis Antetokounmpo",
+          "Joel Embiid",
+          "Kevin Durant"
+        ],
+        "correctAnswerIndex": 1,
+        "difficulty": "Challenging"
+      },
+      {
+        "question": "Who was the head coach of the Milwaukee Bucks during their 2021 NBA Championship run?",
+        "answers": [
+          "Mike Budenholzer",
+          "Steve Kerr",
+          "Monty Williams",
+          "Doc Rivers",
+          "Erik Spoelstra"
+        ],
+        "correctAnswerIndex": 0,
+        "difficulty": "Challenging"
+      },
+      {
+        "question": "Which player has the highest career free throw percentage in NBA history?",
+        "answers": [
+          "Stephen Curry",
+          "Steve Nash",
+          "Mark Price",
+          "Ray Allen",
+          "Kevin Durant"
+        ],
+        "correctAnswerIndex": 1,
+        "difficulty": "Medium"
+      },
+      {
+        "question": "Which player was the first overall pick in the 2023 NBA Draft?",
+        "answers": [
+          "Victor Wembanyama",
+          "Scoot Henderson",
+          "Brandon Miller",
+          "Amen Thompson",
+          "Chet Holmgren"
+        ],
+        "correctAnswerIndex": 0,
+        "difficulty": "Easy"
+      }
+    ]
+  }
 }
-
-    
