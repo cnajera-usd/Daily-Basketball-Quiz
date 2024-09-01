@@ -5,25 +5,25 @@ import '../styles/Leaderboard.css';
 import moment from 'moment-timezone';
 
 const LeaderboardPage = () => {
-    const [scores, setScores] = useState([]);
+    const [streaks, setStreaks] = useState([]);
 
     useEffect(() => {
-        const fetchScores = async () => {
+        const fetchStreaks = async () => {
             try {
                 const scoresQuery = query(
-                    collection(db, 'quizScores'),
-                    orderBy('score', 'desc'),
+                    collection(db, 'users'),
+                    orderBy('streak', 'desc'),
                     limit(10)
                 );
                 const querySnapshot = await getDocs(scoresQuery);
-                const scoresList = querySnapshot.docs.map(doc => doc.data());
-                setScores(scoresList);
+                const streaksList = querySnapshot.docs.map(doc => doc.data());
+                setStreaks(streaksList);
             } catch (error) {
                 console.error('Error fetching scores:', error);
             }
         };
 
-        fetchScores();
+        fetchStreaks();
     }, []);
 
     const formatDate = (timestamp) => {
@@ -44,15 +44,15 @@ const LeaderboardPage = () => {
     return (
         <div className="leaderboard">
             <h2>Leaderboard</h2>
-            <h3>Top Scores</h3>
+            <h3>Top Streaks</h3>
             <ul>
-                {scores.map((score, index) => (
+                {streaks.map((user, index) => (
                     <li key={index} className="leaderboard-item">
                         <span className="rank">{index + 1}</span>
-                        <span className="username">{score.username || 'Unknown User'}</span>
-                        <span className="score">{score.score}/10</span>
+                        <span className="username">{user.username || 'Unknown User'}</span>
+                        <span className="streak">{user.streak} days</span>
                         <span className="date">
-                            {formatDate(score.timestamp)}
+                            Last Quiz: {formatDate(user.lastQuizDate)}
                         </span>
                     </li>
                 ))}
