@@ -1,24 +1,11 @@
-// src/services/quizScoreService.js
 import { db } from '../firebaseConfig'; // Import Firebase Firestore configuration
 import { collection, addDoc, setDoc, doc, getDoc } from 'firebase/firestore'; // Import Firestore functions
 import moment from 'moment-timezone';
 
-// Function to save the quiz score to Firestore
-export const saveQuizScore = async (userId, username, score, quizDate) => {
+export const saveQuizScore = async (userId, username, score, totalScore, quizDate) => {
     try {
-        const quizCollection = collection(db, 'quizScores');
-        await addDoc(quizCollection, {
-            userId,
-            username,
-            score,
-            quizDate,
-            timestamp: new Date(),
-        });
-
-
-        const userRef = doc(db, 'users', userId);
-        const userSnap = await getDoc(userRef);
-        const currentDate = moment.tz('America/Los_Angeles').format('YYYY-MM-DD');
+        const userDocRef = doc(db, 'users', userId);
+        const userSnap = await getDoc(userDocRef);
 
         let newStreak = 1;
         if (userSnap.exists()) {
@@ -26,18 +13,35 @@ export const saveQuizScore = async (userId, username, score, quizDate) => {
             const lastQuizDate = userData.lastQuizDate || '';
             const streak = userData.streak || 0;
 
-            const yesterday = moment(currentDate).subtract(1, 'days').format('YYYY-MM-DD');
-            if (lastQuizDate === yesterday) {
+            // Check if the last quiz date was yesterday
+            if (moment(lastQuizDate).isSame(moment(quizDate).subtract(1, 'days'), 'day')) {
                 newStreak = streak + 1;
+            } else if (!moment(lastQuizDate).isSame(moment(quizDate), 'day')) {
+                // Reset streak if the quiz date is not consecutive
+                newStreak = 1;
             }
         }
 
-        await setDoc(userRef, {
+        // Save/update user's streak and last quiz date
+        await setDoc(userDocRef, {
             streak: newStreak,
-            lastQuizDate: currentDate,
-            username: username,            
+            lastQuizDate: quizDate,
+            username: username,
         }, { merge: true });
+
+        // Save the quiz score in the quizScores collection
+        const quizCollection = collection(db, 'quizScores');
+        await addDoc(quizCollection, {
+            userId,
+            username,
+            score,
+            totalScore,
+            quizDate,
+            timestamp: new Date(),
+        });
+
+        console.log('Quiz score and streak updated successfully!');
     } catch (error) {
-        console.error('Error saving quiz store or updating streak:', error);
+        console.error('Error saving quiz score:', error);
     }
 };
