@@ -1,43 +1,31 @@
 /* src/pages/Leaderboard.css */
 
-.leaderboard {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-.leaderboard h2, .leaderboard h3 {
-    text-align: center;
-    margin-bottom: 20px;
-}
+/* Leaderboard.css */
 
 .leaderboard-item {
     display: flex;
-    align-items: center;
-    margin-bottom: 10px;
+    justify-content: space-between;
     padding: 10px;
-    border-radius: 5px;
-    background-color: #f8f9fa;
-    transition: background-color 0.3s ease;
+    border-bottom: 1px solid #ccc;
 }
 
-.rank {
-    font-weight: bold;
-    width: 30px;
-    text-align: center;
+.leaderboard-item .rank,
+.leaderboard-item .username,
+.leaderboard-item .streak,
+.leaderboard-item .date {
+    flex: 1;
+    text-align: left;
 }
 
-.username {
-    flex-grow: 1;
-    font-weight: bold;
+.leaderboard-item .streak {
+    text-align: center; /* Center the streak count */
 }
 
-.score {
-    font-size: 1.2em;
-    margin-right: 10px;
+.leaderboard-item .date {
+    text-align: right; /* Align the date to the right */
 }
 
-.date {
-    color: #888;
+.leaderboard-item .date::before {
+    content: ' '; /* Add a space before the date */
+    margin-left: 10px; /* Adjust spacing as needed */
 }
-

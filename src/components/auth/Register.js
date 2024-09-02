@@ -1,42 +1,42 @@
 import React, { useState } from 'react';
-import { auth } from '../../firebaseConfig'; // Import Firebase auth and Firestore db
+import { auth } from '../../firebaseConfig';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { createUserProfile } from '../../services/userService';
+import { setDoc, doc } from 'firebase/firestore'; // <-- Add this line to import Firestore functions
+import { db } from '../../firebaseConfig'; // <-- Add this line to import Firestore
 
 const Register = () => {
-  const [email, setEmail] = useState(''); // State for storing email input
-  const [password, setPassword] = useState(''); // State for storing password input
-  const [confirmPassword, setConfirmPassword] = useState(''); // State for storing confirm password input
-  const [username, setUsername] = useState(''); // State for storing username input
-  const [error, setError] = useState(''); // State for storing error messages
-  const [showPassword, setShowPassword] = useState(false); // State for managing password visibility
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [username, setUsername] = useState('');
+  const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleRegister = async (e) => {
-    e.preventDefault(); // Prevent form submission from reloading the page
+    e.preventDefault();
     if (password !== confirmPassword) {
       setError('Passwords do not match');
       return;
     }
-    
+
     try {
-      // Create the user with email and password
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // Update the user's profile with the username
       await updateProfile(user, { displayName: username });
 
-      // call the createUserProfile function to save the user profile
-      await createUserProfile({
+      // Save user details to Firestore
+      const registrationDate = new Date().toISOString(); // <-- Get the current date for registration
+      await setDoc(doc(db, 'users', user.uid), { // <-- Save to Firestore
         uid: user.uid,
         username: username,
-        email: email
+        email: email,
+        registrationDate: registrationDate,
       });
-
 
       alert('Registration successful! You can now log in.');
     } catch (error) {
-      setError(error.message); // Set error message if registration fails
+      setError(error.message);
     }
   };
 
@@ -51,7 +51,7 @@ const Register = () => {
             id="username"
             name="username"
             value={username}
-            onChange={(e) => setUsername(e.target.value)} // Update username state on change
+            onChange={(e) => setUsername(e.target.value)}
             required
           />
         </div>
@@ -62,7 +62,7 @@ const Register = () => {
             id="email"
             name="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)} // Update email state on change
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>
@@ -70,17 +70,17 @@ const Register = () => {
           <label htmlFor="password">Password:</label>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <input
-              type={showPassword ? "text" : "password"} // Toggle between password and text input type
+              type={showPassword ? "text" : "password"}
               id="password"
               name="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)} // update password state on change
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
             <button
               type="button"
-              onClick={() => setShowPassword(!showPassword)} // toggle password visibility
-              style={{ marginLeft: '10px' }} // Add some space between input and button
+              onClick={() => setShowPassword(!showPassword)}
+              style={{ marginLeft: '10px' }}
             >
               {showPassword ? "Hide" : "Show"} Password
             </button>
@@ -89,17 +89,17 @@ const Register = () => {
         <div className="form-group">
           <label htmlFor="confirm-password">Confirm Password:</label>
           <input
-            type={showPassword ? "text" : "password"} // toggle between password and text input type
+            type={showPassword ? "text" : "password"}
             id="confirm-password"
             name="confirm-password"
             value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)} // Update confirm password state on change
+            onChange={(e) => setConfirmPassword(e.target.value)}
             required
           />
         </div>
         <button className="btn-primary" type="submit">Register</button>
       </form>
-      {error && <p style={{ color: 'red' }}>{error}</p>} {/* Display error messages */}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
   );
 };

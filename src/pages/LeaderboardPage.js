@@ -11,7 +11,7 @@ const LeaderboardPage = () => {
         const fetchStreaks = async () => {
             try {
                 const scoresQuery = query(
-                    collection(db, 'users'),
+                    collection(db, 'userStreaks'),
                     orderBy('streak', 'desc'),
                     limit(10)
                 );
@@ -26,19 +26,12 @@ const LeaderboardPage = () => {
         fetchStreaks();
     }, []);
 
-    const formatDate = (timestamp) => {
-        if (timestamp instanceof Date) {
-            // If it's already a Date object
-            return moment.tz(timestamp, 'America/Los_Angeles').format('MM/DD/YYYY');
-        } else if (typeof timestamp === 'string') {
-            // If it's a string
-            return moment.tz(new Date(timestamp), 'America/Los_Angeles').format('MM/DD/YYYY');
-        } else if (timestamp && timestamp.toDate) {
-            // If it's a Firestore Timestamp object
-            return moment.tz(timestamp.toDate(), 'America/Los_Angeles').format('MM/DD/YYYY');
-        } else {
-            return 'Invalid date';
-        }
+    const formatDate = (dateString) => {
+        return moment.tz(dateString, 'America/Los_Angeles').format('MM/DD/YYYY');
+    };
+
+    const formatStreak = (streak) => {
+        return streak === 1 ? `${streak} day` : `${streak} days`;
     };
 
     return (
@@ -50,7 +43,7 @@ const LeaderboardPage = () => {
                     <li key={index} className="leaderboard-item">
                         <span className="rank">{index + 1}</span>
                         <span className="username">{user.username || 'Unknown User'}</span>
-                        <span className="streak">{user.streak} days</span>
+                        <span className="streak">{formatStreak(user.streak)}</span>
                         <span className="date">
                             Last Quiz: {formatDate(user.lastQuizDate)}
                         </span>

@@ -16,10 +16,10 @@ const QuizPage = () => {
   const [quizQuestions, setQuizQuestions] = useState([]);
   const [answers, setAnswers] = useState({});
   const [score, setScore] = useState(0);
-  const [totalPossibleScore, setTotalPossibleScore] = useState(0);
   const [showScoreModal, setShowScoreModal] = useState(false);
   const [hasCompletedQuiz, setHasCompletedQuiz] = useState(false);
   const [hasAttempted, setHasAttempted] = useState(false);
+  const [isReviewMode, setIsReviewMode] = useState(false);
 
   useEffect(() => {
     const fetchQuizData = async () => {
@@ -36,27 +36,6 @@ const QuizPage = () => {
           console.warn('No questions found for today\'s date in quizData.');
         }
         setQuizQuestions(questions);
-
-        let possibleScore = 0;
-        questions.forEach(question => {
-          switch (question.difficulty) {
-            case 'Easy':
-              possibleScore += 1;
-              break;
-            case 'Medium':
-              possibleScore += 2;
-              break;
-            case 'Hard':
-              possibleScore += 3;
-              break;
-            case 'Challenging':
-              possibleScore += 4;
-              break;
-            default:
-              possibleScore += 1;
-          }
-        });
-        setTotalPossibleScore(possibleScore);
 
         const attemptDoc = await getDoc(doc(db, 'quizAttempts', docName));
         console.log(`Quiz Attempt Exists for ${docName}: ${attemptDoc.exists()}`);
@@ -86,26 +65,50 @@ const QuizPage = () => {
     checkQuizAttempt();
   }, []);
 
+  const handleReviewClick = async () => {
+    const userId = auth.currentUser?.uid || "anonymous";
+    const today = moment.tz('America/Los_Angeles').format('YYYY-MM-DD');
+    const docName = `${userId}_${today}`;
+
+    try {
+        const attemptDoc = await getDoc(doc(db, 'quizAttempts', docName));
+
+        if (attemptDoc.exists()) {
+            const userAnswers = attemptDoc.data().answers || {}; // Check if the 'answers' field exists
+            setAnswers(userAnswers); // Loading the saved answers
+            setIsReviewMode(true);
+            setHasCompletedQuiz(true);
+            setShowScoreModal(false);
+            setCurrentQuestionIndex(0); // Start reviewing from the first question
+        } else {
+            console.error("No previous answers found for review.");
+        }
+    } catch (error) {
+        console.error('Error loading previous answers:', error);
+    }
+  };
+
   useEffect(() => {
     const saveAttempt = async () => {
-      if (hasCompletedQuiz) {
-        const userId = auth.currentUser?.uid || "anonymous";
-        const username = auth.currentUser?.displayName || "Unknown User";
-        const quizDate = moment.tz('America/Los_Angeles').format('YYYY-MM-DD');
+        if (hasCompletedQuiz) {
+            const userId = auth.currentUser?.uid || "anonymous";
+            const username = auth.currentUser?.displayName || "Unknown User";
+            const quizDate = moment.tz('America/Los_Angeles').format('YYYY-MM-DD');
 
-        await setDoc(doc(db, 'quizAttempts', `${userId}_${quizDate}`), {
-          userId: userId,
-          username: username,
-          quizDate: quizDate,
-          timestamp: moment().tz('America/Los_Angeles').format('YYYY-MM-DD HH:mm:ss')
-        });
+            await setDoc(doc(db, 'quizAttempts', `${userId}_${quizDate}`), {
+                userId: userId,
+                username: username,
+                quizDate: quizDate,
+                timestamp: moment().tz('America/Los_Angeles').format('YYYY-MM-DD HH:mm:ss'),
+                answers: answers,  // Ensure this field isn't undefined
+            });
 
-        saveQuizScore(userId, username, score, totalPossibleScore, quizDate);
-      }
+            saveQuizScore(userId, username, score, quizQuestions.length, quizDate);
+        }
     };
 
     saveAttempt();
-  }, [hasCompletedQuiz, score, totalPossibleScore]);
+}, [hasCompletedQuiz, score, quizQuestions, answers]);
 
   const handleAnswerClick = (index) => {
     setSelectedAnswerIndex(index);
@@ -118,7 +121,7 @@ const QuizPage = () => {
 
       setAnswers((prevAnswers) => ({
         ...prevAnswers,
-        [nextIndex]: {
+        [currentQuestionIndex]: {
           selectedAnswerIndex,
           feedback
         },
@@ -163,27 +166,7 @@ const QuizPage = () => {
     setFeedback(isCorrect ? 'Correct!' : 'Incorrect.');
 
     if (isCorrect) {
-      const difficulty = quizQuestions[currentQuestionIndex]?.difficulty;
-      let points = 0;
-
-      switch (difficulty) {
-        case 'Easy':
-          points = 1;
-          break;
-        case 'Medium':
-          points = 2;
-          break;
-        case 'Hard':
-          points = 3;
-          break;
-        case 'Challenging':
-          points = 4;
-          break;
-        default:
-          points = 1;
-      }
-
-      setScore((prevScore) => prevScore + points);
+      setScore((prevScore) => prevScore + 1);
     }
 
     if (currentQuestionIndex === quizQuestions.length - 1) {
@@ -196,7 +179,12 @@ const QuizPage = () => {
     <div className="quiz-container">
       <h1 className="quiz-title">Daily NBA Quiz</h1>
       {hasAttempted ? (
+        <div>
         <p>You have already taken today's quiz. Please come back tomorrow when a new quiz will be available!</p>
+        <button onClick={handleReviewClick} className="review-button">
+            Review Your Answers
+          </button>
+        </div>
       ) : quizQuestions.length > 0 ? (
         <div>
           <div className="question-section">
@@ -212,8 +200,8 @@ const QuizPage = () => {
                   <button
                     key={index}
                     className={`answer-button ${selectedAnswerIndex === index ? 'selected' : ''} ${feedback && index === quizQuestions[currentQuestionIndex]?.correctAnswerIndex ? 'correct' : ''} ${feedback && selectedAnswerIndex === index && !isCorrect ? 'incorrect' : ''}`}
-                    onClick={() => handleAnswerClick(index)}
-                    disabled={feedback !== null}
+                    onClick={() => !isReviewMode && handleAnswerClick(index)}
+                    disabled={isReviewMode}
                   >
                     {answer}
                   </button>
@@ -233,7 +221,7 @@ const QuizPage = () => {
             <button
               className="nav-button submit-button"
               onClick={handleSubmitAnswer}
-              disabled={hasCompletedQuiz}
+              disabled={hasCompletedQuiz || isReviewMode}
             >
               Submit
             </button>
@@ -245,7 +233,7 @@ const QuizPage = () => {
             )}
           </div>
           {hasCompletedQuiz && (
-            <p className='final-score'>Your Final Score: {score}/{totalPossibleScore}</p>
+            <p className='final-score'>Your Final Score: {score}/{quizQuestions.length}</p>
           )}
         </div>
       ) : (
@@ -254,7 +242,7 @@ const QuizPage = () => {
       {showScoreModal && (
         <ScoreModal
           score={score}
-          totalQuestions={totalPossibleScore}
+          totalQuestions={quizQuestions.length}
           onClose={closeScoreModal}
         />
       )}

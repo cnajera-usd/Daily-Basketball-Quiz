@@ -1,23 +1,21 @@
 import React, { useState } from 'react';
 import { auth, db } from '../../firebaseConfig'; // Import Firebase auth and Firestore db
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth'; // Import Firebase auth methods
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore'; // Import Firestore functions
-import '../../styles/Auth.css'; // Import CSS for styling
+import '../../styles/Auth.css';
 
 const Auth = () => {
-  const [isRegistering, setIsRegistering] = useState(true); // State to toggle between Register and Login forms
-
+  const [isRegistering, setIsRegistering] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState(''); // State for storing confirm password input
-  const [username, setUsername] = useState(''); // State for storing username input
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [username, setUsername] = useState('');
   const [error, setError] = useState('');
-  const [showPassword, setShowPassword] = useState(false); // State for managing password visibility
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    // Check if passwords match
     if (password !== confirmPassword) {
       setError('Passwords do not match');
       return;
@@ -27,25 +25,24 @@ const Auth = () => {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // Update the user's profile with the username
       await updateProfile(user, { displayName: username });
 
-      // Save additional user data to Firestore automatically using the UID as the document ID
-      await setDoc(doc(db, 'users', user.uid), {
+      // Save user details to Firestore
+      const registrationDate = new Date().toISOString(); // <-- Get the current date for registration
+      await setDoc(doc(db, 'users', user.uid), { // <-- Save to Firestore
         uid: user.uid,
         username: username,
-        email: email
+        email: email,
+        registrationDate: registrationDate,
       });
 
       alert('Registration successful! You can now log in.');
-
-      // Clear the form inputs
       setEmail('');
       setPassword('');
       setConfirmPassword('');
       setUsername('');
       setError('');
-      setIsRegistering(false); // Switch to login form after successful registration
+      setIsRegistering(false); 
     } catch (error) {
       setError(error.message);
     }
@@ -68,7 +65,7 @@ const Auth = () => {
     <div className="form-container">
       <h2>{isRegistering ? 'Register' : 'Login'}</h2>
       <form onSubmit={isRegistering ? handleRegister : handleLogin}>
-        {isRegistering && ( // Only show username input if registering
+        {isRegistering && (
           <div className="form-group">
             <label htmlFor="username">Username:</label>
             <input
@@ -112,7 +109,7 @@ const Auth = () => {
             </button>
           </div>
         </div>
-        {isRegistering && ( // Only show confirm password if registering
+        {isRegistering && (
           <div className="form-group">
             <label htmlFor="confirm-password">Confirm Password:</label>
             <input
