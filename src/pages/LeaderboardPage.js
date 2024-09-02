@@ -45,7 +45,7 @@ const LeaderboardPage = () => {
                         <span className="username">{user.username || 'Unknown User'}</span>
                         <span className="streak">{formatStreak(user.streak)}</span>
                         <span className="date">
-                            Last Quiz: {formatDate(user.lastQuizDate)}
+                            Last Quiz: {formatDate(user.lastQuizDate)} - Score: {user.lastQuizScore}/{10}
                         </span>
                     </li>
                 ))}
