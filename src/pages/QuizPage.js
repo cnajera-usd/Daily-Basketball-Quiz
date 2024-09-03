@@ -66,6 +66,7 @@ const QuizPage = () => {
   }, []);
 
   const handleReviewClick = async () => {
+    console.log("Review button clicked");
     const userId = auth.currentUser?.uid || "anonymous";
     const today = moment.tz('America/Los_Angeles').format('YYYY-MM-DD');
     const docName = `${userId}_${today}`;
@@ -74,19 +75,22 @@ const QuizPage = () => {
         const attemptDoc = await getDoc(doc(db, 'quizAttempts', docName));
 
         if (attemptDoc.exists()) {
+            console.log("Fetched attemptDoc data:", attemptDoc.data());
             const userAnswers = attemptDoc.data().answers || {}; // Check if the 'answers' field exists
             setAnswers(userAnswers); // Loading the saved answers
             setIsReviewMode(true);
             setHasCompletedQuiz(true);
             setShowScoreModal(false);
             setCurrentQuestionIndex(0); // Start reviewing from the first question
+            console.log("Set to review mode, answers loaded:", userAnswers);
         } else {
             console.error("No previous answers found for review.");
         }
     } catch (error) {
         console.error('Error loading previous answers:', error);
     }
-  };
+};
+
 
   useEffect(() => {
     const saveAttempt = async () => {
