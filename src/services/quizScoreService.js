@@ -4,10 +4,8 @@ import moment from 'moment-timezone';
 
 export const saveQuizScore = async (userId, username, score, totalScore, quizDate) => {
     try {
-        
         const streakDocRef = doc(db, 'userStreaks', userId);        
         const streakSnap = await getDoc(streakDocRef);
-
 
         let newStreak = 1;
         if (streakSnap.exists()) {
@@ -24,21 +22,21 @@ export const saveQuizScore = async (userId, username, score, totalScore, quizDat
             }
         }
 
-        // Save or update the user's streak and last quiz date in the 'users' collection
+        // Save or update the user's streak and last quiz date in the 'userStreaks' collection
         await setDoc(streakDocRef, {
             streak: newStreak,
             lastQuizDate: quizDate,
-            lastQuizScore: score,
+            lastQuizScore: score,  // Use the correct score here
             username: username,
         }, { merge: true });
 
-        // Save the quiz score in the 'quizScores' collection
+        // Save the final quiz score in the 'quizScores' collection
         const quizCollection = collection(db, 'quizScores');
         await addDoc(quizCollection, {
             userId,
             username,
-            score,
-            totalScore,
+            score,  // Ensure the correct score is being saved
+            totalScore,  // Total possible score
             quizDate,
             timestamp: new Date(),  // Correct timezone for the timestamp
         });

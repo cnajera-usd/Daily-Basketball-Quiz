@@ -54,9 +54,11 @@
 }
 
 .answer-button.selected {
-    background-color: #92140c;
-    color: white;
+    background-color: #92140c; /* Your selected background color */
+    color: white; /* Text color when selected */
+    border: 2px solid #000; /* Optional: a darker border to make it stand out */
 }
+
 
 .action-buttons {
     display: flex;

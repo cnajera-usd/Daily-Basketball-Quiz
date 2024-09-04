@@ -42,6 +42,10 @@ const QuizPage = () => {
 
         if (attemptDoc.exists()) {
           setHasAttempted(true);
+          console.log("Quiz attempt found, setting hasAttempted to true.");
+        } else {
+          setIsReviewMode(false);
+          console.log("No previous attempt, setting isReviewMode to false.");
         }
       } catch (error) {
         console.error('Error fetching quiz data:', error);
@@ -57,7 +61,10 @@ const QuizPage = () => {
 
       if (attemptDoc.exists()) {
         setHasAttempted(true);
+        console.log("Quiz attempt found, setting hasAttempted to true.");
       } else {
+        setIsReviewMode(false);
+        console.log("No previous attempt, setting isReviewMode to false.");
         fetchQuizData();
       }
     };
@@ -72,49 +79,49 @@ const QuizPage = () => {
     const docName = `${userId}_${today}`;
 
     try {
-        const attemptDoc = await getDoc(doc(db, 'quizAttempts', docName));
+      const attemptDoc = await getDoc(doc(db, 'quizAttempts', docName));
 
-        if (attemptDoc.exists()) {
-            console.log("Fetched attemptDoc data:", attemptDoc.data());
-            const userAnswers = attemptDoc.data().answers || {}; // Check if the 'answers' field exists
-            setAnswers(userAnswers); // Loading the saved answers
-            setIsReviewMode(true);
-            setHasCompletedQuiz(true);
-            setShowScoreModal(false);
-            setCurrentQuestionIndex(0); // Start reviewing from the first question
-            console.log("Set to review mode, answers loaded:", userAnswers);
-        } else {
-            console.error("No previous answers found for review.");
-        }
+      if (attemptDoc.exists()) {
+        console.log("Fetched attemptDoc data:", attemptDoc.data());
+        const userAnswers = attemptDoc.data().answers || {}; // Check if the 'answers' field exists
+        setAnswers(userAnswers); // Loading the saved answers
+        setIsReviewMode(true);
+        setHasCompletedQuiz(true);
+        setShowScoreModal(false);
+        setCurrentQuestionIndex(0); // Start reviewing from the first question
+        console.log("Set to review mode, answers loaded:", userAnswers);
+      } else {
+        console.error("No previous answers found for review.");
+      }
     } catch (error) {
-        console.error('Error loading previous answers:', error);
+      console.error('Error loading previous answers:', error);
     }
-};
-
+  };
 
   useEffect(() => {
     const saveAttempt = async () => {
-        if (hasCompletedQuiz) {
-            const userId = auth.currentUser?.uid || "anonymous";
-            const username = auth.currentUser?.displayName || "Unknown User";
-            const quizDate = moment.tz('America/Los_Angeles').format('YYYY-MM-DD');
+      if (hasCompletedQuiz) {
+        const userId = auth.currentUser?.uid || "anonymous";
+        const username = auth.currentUser?.displayName || "Unknown User";
+        const quizDate = moment.tz('America/Los_Angeles').format('YYYY-MM-DD');
 
-            await setDoc(doc(db, 'quizAttempts', `${userId}_${quizDate}`), {
-                userId: userId,
-                username: username,
-                quizDate: quizDate,
-                timestamp: moment().tz('America/Los_Angeles').format('YYYY-MM-DD HH:mm:ss'),
-                answers: answers,  // Ensure this field isn't undefined
-            });
+        await setDoc(doc(db, 'quizAttempts', `${userId}_${quizDate}`), {
+          userId: userId,
+          username: username,
+          quizDate: quizDate,
+          timestamp: moment().tz('America/Los_Angeles').format('YYYY-MM-DD HH:mm:ss'),
+          answers: answers,  // Ensure this field isn't undefined
+        });
 
-            saveQuizScore(userId, username, score, quizQuestions.length, quizDate);
-        }
+        saveQuizScore(userId, username, score, quizQuestions.length, quizDate);
+      }
     };
 
     saveAttempt();
-}, [hasCompletedQuiz, score, quizQuestions, answers]);
+  }, [hasCompletedQuiz, score, quizQuestions, answers]);
 
   const handleAnswerClick = (index) => {
+    console.log(`Answer clicked: ${index}`);
     setSelectedAnswerIndex(index);
     setFeedback(null);
   };
@@ -132,6 +139,8 @@ const QuizPage = () => {
       }));
 
       setCurrentQuestionIndex(nextIndex);
+      setSelectedAnswerIndex(null); // Reset selection for the new question
+      setFeedback(null); // Reset feedback
 
       const nextAnswer = answers[nextIndex];
       setSelectedAnswerIndex(nextAnswer?.selectedAnswerIndex || null);
@@ -184,8 +193,8 @@ const QuizPage = () => {
       <h1 className="quiz-title">Daily NBA Quiz</h1>
       {hasAttempted ? (
         <div>
-        <p>You have already taken today's quiz. Please come back tomorrow when a new quiz will be available!</p>
-        <button onClick={handleReviewClick} className="review-button">
+          <p>You have already taken today's quiz. Please come back tomorrow when a new quiz will be available!</p>
+          <button onClick={handleReviewClick} className="review-button">
             Review Your Answers
           </button>
         </div>
@@ -200,10 +209,13 @@ const QuizPage = () => {
                 const correctAnswerIndex = quizQuestions[currentQuestionIndex]?.correctAnswerIndex;
                 const isCorrect = selectedAnswerIndex === correctAnswerIndex;
 
+                // Determine if this is the selected answer during the review mode
+                const isSelectedAnswer = selectedAnswerIndex === index;
+
                 return (
                   <button
                     key={index}
-                    className={`answer-button ${selectedAnswerIndex === index ? 'selected' : ''} ${feedback && index === quizQuestions[currentQuestionIndex]?.correctAnswerIndex ? 'correct' : ''} ${feedback && selectedAnswerIndex === index && !isCorrect ? 'incorrect' : ''}`}
+                    className={`answer-button ${isSelectedAnswer ? 'selected' : ''} ${feedback && index === correctAnswerIndex ? 'correct' : ''} ${feedback && selectedAnswerIndex === index && !isCorrect ? 'incorrect' : ''}`}
                     onClick={() => !isReviewMode && handleAnswerClick(index)}
                     disabled={isReviewMode}
                   >

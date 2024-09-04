@@ -1,31 +1,81 @@
-/* src/pages/Leaderboard.css */
-
-/* Leaderboard.css */
-
-.leaderboard-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    border-bottom: 1px solid #ccc;
+.leaderboard-container {
+    max-width: 800px;
+    margin: auto;
+    background: #f0f4f7;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }
 
-.leaderboard-item .rank,
-.leaderboard-item .username,
-.leaderboard-item .streak,
-.leaderboard-item .date {
-    flex: 1;
-    text-align: left;
+.leaderboard-title {
+    text-align: center;
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 20px;
 }
 
-.leaderboard-item .streak {
-    text-align: center; /* Center the streak count */
+.leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
-.leaderboard-item .date {
-    text-align: right; /* Align the date to the right */
+.leaderboard-table th, .leaderboard-table td {
+    padding: 15px;
+    text-align: center;
 }
 
-.leaderboard-item .date::before {
-    content: ' '; /* Add a space before the date */
-    margin-left: 10px; /* Adjust spacing as needed */
+.leaderboard-table th {
+    background-color: #79818c;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.leaderboard-table tr:nth-child(even) {
+    background-color: #e9ecef;
+}
+
+.leaderboard-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.leaderboard-table td {
+    border-bottom: 1px solid #ddd;
+}
+
+.leaderboard-avatar {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+}
+
+.leaderboard-username {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.leaderboard-score {
+    font-size: 1rem;
+    color: #92140C; /* Example of using theme color */
+}
+
+.leaderboard-rank {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #FFD700; /* Gold color for the first place */
+}
+
+.leaderboard-rank-1 { color: #FFD700; } /* Gold */
+.leaderboard-rank-2 { color: #C0C0C0; } /* Silver */
+.leaderboard-rank-3 { color: #CD7F32; } /* Bronze */
+
+@media (max-width: 600px) {
+    .leaderboard-table {
+        font-size: 0.9rem;
+    }
+
+    .leaderboard-container {
+        padding: 10px;
+    }
 }
