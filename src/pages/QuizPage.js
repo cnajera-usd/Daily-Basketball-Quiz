@@ -165,9 +165,9 @@ const QuizPage = () => {
 
   const handleSubmitAnswer = () => {
     if (hasCompletedQuiz) return;
-
+  
     const isCorrect = selectedAnswerIndex === quizQuestions[currentQuestionIndex]?.correctAnswerIndex;
-
+  
     setAnswers((prevAnswers) => ({
       ...prevAnswers,
       [currentQuestionIndex]: {
@@ -175,18 +175,27 @@ const QuizPage = () => {
         feedback: isCorrect ? 'Correct!' : 'Incorrect.',
       },
     }));
-
+  
     setFeedback(isCorrect ? 'Correct!' : 'Incorrect.');
-
+  
     if (isCorrect) {
       setScore((prevScore) => prevScore + 1);
     }
-
+  
     if (currentQuestionIndex === quizQuestions.length - 1) {
+      // Final question submitted, mark quiz as completed
       setHasCompletedQuiz(true);
       setShowScoreModal(true);
+  
+      // Call saveQuizScore after the quiz is marked as completed
+      const userId = auth.currentUser?.uid || "anonymous";
+      const username = auth.currentUser?.displayName || "Unknown User";
+      const quizDate = moment.tz('America/Los_Angeles').format('YYYY-MM-DD');
+      
+      saveQuizScore(userId, username, score + (isCorrect ? 1 : 0), quizQuestions.length, quizDate);
     }
   };
+  
 
   return (
     <div className="quiz-container">
