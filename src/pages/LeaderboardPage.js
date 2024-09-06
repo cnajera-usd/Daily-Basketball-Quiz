@@ -35,8 +35,9 @@ const LeaderboardPage = () => {
     };
 
     return (
-        <div className="leaderboard-container">
-            <h2 className="leaderboard-title">Top Streaks</h2>
+        <div className="leaderboard">
+            <h2>Leaderboard</h2>
+            <h3>Top Streaks</h3>
             <table className="leaderboard-table">
                 <thead>
                     <tr>
@@ -48,15 +49,13 @@ const LeaderboardPage = () => {
                 </thead>
                 <tbody>
                     {streaks.map((user, index) => (
-                        <tr key={index}>
-                            <td className={`leaderboard-rank leaderboard-rank-${index + 1}`}>
-                                {index + 1}
+                        <tr key={index} className='leadeboard=item'>
+                            <td className="rank">{index === 0 ? '👑' : index + 1}</td>
+                            <td className="username">{user.username || 'Unknown User'}</td>
+                            <td className="streak">{formatStreak(user.streak)}</td>
+                            <td className="date">
+                                Last Quiz: {formatDate(user.lastQuizDate)} - Score: {user.lastQuizScore}/{10}
                             </td>
-                            <td className="leaderboard-username">
-                                {user.username || 'Unknown User'}
-                            </td>
-                            <td>{formatStreak(user.streak)}</td>
-                            <td>{formatDate(user.lastQuizDate)} - Score: {user.lastQuizScore}/{10}</td>
                         </tr>
                     ))}
                 </tbody>

@@ -4,7 +4,7 @@
     background: #f0f4f7;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.1);
 }
 
 .leaderboard-title {
@@ -15,34 +15,52 @@
 }
 
 .leaderboard-table {
-    width: 100%;
-    border-collapse: collapse;
+    border: 1px solid #ddd;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
 }
 
 .leaderboard-table th, .leaderboard-table td {
     padding: 15px;
     text-align: center;
+    border-bottom: 1px solid #dee2e6;
 }
 
 .leaderboard-table th {
-    background-color: #79818c;
-    color: white;
+    background-color: #f8f9fa;
     font-weight: bold;
-    text-transform: uppercase;
 }
 
 .leaderboard-table tr:nth-child(even) {
-    background-color: #e9ecef;
+    background-color: #f9f9f9;
 }
 
+/* Lighten rank colors */
+.leaderboard-table tr:first-child {
+    background-color: #fffad1; /* Lighter Gold */
+}
+
+.leaderboard-table tr:nth-child(2) {
+    background-color: #e0e0e0; /* Lighter Silver */
+}
+
+.leaderboard-table tr:nth-child(3) {
+    background-color: #f3e2d1; /* Lighter Bronze */
+}
+
+/* Subtle hover effect */
 .leaderboard-table tr:hover {
-    background-color: #f1f1f1;
+    transform: scale(1.02);
+    transition: transform 0.2s ease-in-out;
 }
 
+/* Styling for each cell */
 .leaderboard-table td {
+    padding: 15px;
     border-bottom: 1px solid #ddd;
 }
 
+/* Avatar */
 .leaderboard-avatar {
     border-radius: 50%;
     width: 40px;
@@ -50,26 +68,34 @@
     object-fit: cover;
 }
 
+/* Username Styling */
 .leaderboard-username {
     font-weight: bold;
     font-size: 1.1rem;
 }
 
+/* Score styling */
 .leaderboard-score {
     font-size: 1rem;
-    color: #92140C; /* Example of using theme color */
+    color: #92140C; /* Theme color */
 }
 
-.leaderboard-rank {
-    font-size: 1.2rem;
+/* Rank-specific colors */
+.rank {
     font-weight: bold;
-    color: #FFD700; /* Gold color for the first place */
+    font-size: 1.2rem;
 }
 
 .leaderboard-rank-1 { color: #FFD700; } /* Gold */
 .leaderboard-rank-2 { color: #C0C0C0; } /* Silver */
 .leaderboard-rank-3 { color: #CD7F32; } /* Bronze */
 
+/* Text Styling */
+.username, .streak, .date {
+    font-size: 1rem;
+}
+
+/* Responsive Design */
 @media (max-width: 600px) {
     .leaderboard-table {
         font-size: 0.9rem;
@@ -77,5 +103,32 @@
 
     .leaderboard-container {
         padding: 10px;
+    }
+}
+
+/* Leaderboard Header */
+.leaderboard h2 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #343a40;
+}
+
+.leaderboard h3 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 30px;
+    text-align: center;
+    border-bottom: 2px solid #343a40;
+    display: inline-block;
+    padding-bottom: 5px;
+    color: #343a40;
+}
+
+/* Responsive for tablet-size screens */
+@media only screen and (max-width: 768px) {
+    .leaderboard-table th, .leaderboard-table td {
+        font-size: 14px;
     }
 }
