@@ -5,7 +5,7 @@ import ScoreModal from '../components/ScoreModal';
 import { auth } from '../firebaseConfig';
 import { saveQuizScore } from '../services/quizScoreService';
 import moment from 'moment-timezone';
-import { getDoc, doc, setDoc } from 'firebase/firestore';
+import { getDoc, doc } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import 'moment-timezone/data/packed/latest.json';
 
@@ -20,16 +20,15 @@ const QuizPage = () => {
   const [hasCompletedQuiz, setHasCompletedQuiz] = useState(false);
   const [hasAttempted, setHasAttempted] = useState(false);
   const [isReviewMode, setIsReviewMode] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Track loading state to prevent premature rendering
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // Track authentication status
 
   useEffect(() => {
     const fetchQuizData = async () => {
       try {
+        // Always fetch quiz questions for today
         const today = moment.tz('America/Los_Angeles').format('YYYY-MM-DD');
-        console.log(`Calculated Today Date: ${today}`);
-
-        const userId = auth.currentUser?.uid || "anonymous";
-        const docName = `${userId}_${today}`;
-        console.log(`Checking Firestore Document: ${docName}`);
+        console.log(`Today's date: ${today}`);
 
         const questions = quizData[today]?.questions || [];
         if (questions.length === 0) {
@@ -37,42 +36,46 @@ const QuizPage = () => {
         }
         setQuizQuestions(questions);
 
-        const attemptDoc = await getDoc(doc(db, 'quizAttempts', docName));
-        console.log(`Quiz Attempt Exists for ${docName}: ${attemptDoc.exists()}`);
+        // Check if the user is logged in
+        const user = auth.currentUser;
+        setIsAuthenticated(!!user); // Set authentication state
 
-        if (attemptDoc.exists()) {
-          setHasAttempted(true);
-          console.log("Quiz attempt found, setting hasAttempted to true.");
+        if (user) {
+          const userId = user.uid;
+          console.log(`User is logged in with ID: ${userId}`);
+
+          // Check if the user has already taken the quiz
+          const docName = `${userId}_${today}`;
+          const attemptDoc = await getDoc(doc(db, 'quizAttempts', docName));
+          console.log(`Quiz attempt exists for ${docName}: ${attemptDoc.exists()}`);
+
+          if (attemptDoc.exists()) {
+            setHasAttempted(true);
+            console.log("Quiz attempt found, setting hasAttempted to true.");
+          } else {
+            setHasAttempted(false);
+            console.log("No quiz attempt found for today. Proceeding to quiz.");
+          }
         } else {
-          setIsReviewMode(false);
-          console.log("No previous attempt, setting isReviewMode to false.");
+          // For anonymous users, allow them to take the quiz but don't track attempts
+          setHasAttempted(false);
+          console.log("Anonymous user, quiz allowed but not tracked.");
         }
       } catch (error) {
         console.error('Error fetching quiz data:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    const checkQuizAttempt = async () => {
-      const userId = auth.currentUser?.uid || "anonymous";
-      const today = moment.tz('America/Los_Angeles').format('YYYY-MM-DD');
-
-      const attemptDoc = await getDoc(doc(db, 'quizAttempts', `${userId}_${today}`));
-      console.log(`Attempt Doc Exists for ${userId}_${today}: ${attemptDoc.exists()}`);
-
-      if (attemptDoc.exists()) {
-        setHasAttempted(true);
-        console.log("Quiz attempt found, setting hasAttempted to true.");
-      } else {
-        setIsReviewMode(false);
-        console.log("No previous attempt, setting isReviewMode to false.");
-        fetchQuizData();
-      }
-    };
-
-    checkQuizAttempt();
+    fetchQuizData();
   }, []);
 
   const handleReviewClick = async () => {
+    if (!isAuthenticated) {
+      console.warn("Anonymous users cannot review answers.");
+      return;
+    }
     console.log("Review button clicked");
     const userId = auth.currentUser?.uid || "anonymous";
     const today = moment.tz('America/Los_Angeles').format('YYYY-MM-DD');
@@ -97,28 +100,6 @@ const QuizPage = () => {
       console.error('Error loading previous answers:', error);
     }
   };
-
-  useEffect(() => {
-    const saveAttempt = async () => {
-      if (hasCompletedQuiz) {
-        const userId = auth.currentUser?.uid || "anonymous";
-        const username = auth.currentUser?.displayName || "Unknown User";
-        const quizDate = moment.tz('America/Los_Angeles').format('YYYY-MM-DD');
-
-        await setDoc(doc(db, 'quizAttempts', `${userId}_${quizDate}`), {
-          userId: userId,
-          username: username,
-          quizDate: quizDate,
-          timestamp: moment().tz('America/Los_Angeles').format('YYYY-MM-DD HH:mm:ss'),
-          answers: answers,  // Ensure this field isn't undefined
-        });
-
-        saveQuizScore(userId, username, score, quizQuestions.length, quizDate);
-      }
-    };
-
-    saveAttempt();
-  }, [hasCompletedQuiz, score, quizQuestions, answers]);
 
   const handleAnswerClick = (index) => {
     console.log(`Answer clicked: ${index}`);
@@ -165,9 +146,9 @@ const QuizPage = () => {
 
   const handleSubmitAnswer = () => {
     if (hasCompletedQuiz) return;
-  
+
     const isCorrect = selectedAnswerIndex === quizQuestions[currentQuestionIndex]?.correctAnswerIndex;
-  
+
     setAnswers((prevAnswers) => ({
       ...prevAnswers,
       [currentQuestionIndex]: {
@@ -175,27 +156,34 @@ const QuizPage = () => {
         feedback: isCorrect ? 'Correct!' : 'Incorrect.',
       },
     }));
-  
+
     setFeedback(isCorrect ? 'Correct!' : 'Incorrect.');
-  
+
     if (isCorrect) {
       setScore((prevScore) => prevScore + 1);
     }
-  
+
     if (currentQuestionIndex === quizQuestions.length - 1) {
       // Final question submitted, mark quiz as completed
       setHasCompletedQuiz(true);
       setShowScoreModal(true);
-  
-      // Call saveQuizScore after the quiz is marked as completed
-      const userId = auth.currentUser?.uid || "anonymous";
-      const username = auth.currentUser?.displayName || "Unknown User";
-      const quizDate = moment.tz('America/Los_Angeles').format('YYYY-MM-DD');
-      
-      saveQuizScore(userId, username, score + (isCorrect ? 1 : 0), quizQuestions.length, quizDate);
+
+      // Only save quiz attempt for authenticated users
+      if (isAuthenticated) {
+        const userId = auth.currentUser?.uid || "anonymous";
+        const username = auth.currentUser?.displayName || "Unknown User";
+        const quizDate = moment.tz('America/Los_Angeles').format('YYYY-MM-DD');
+
+        saveQuizScore(userId, username, score + (isCorrect ? 1 : 0), quizQuestions.length, quizDate);
+      } else {
+        console.log("Anonymous user completed quiz. No score tracking.");
+      }
     }
   };
-  
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <div className="quiz-container">
@@ -203,9 +191,11 @@ const QuizPage = () => {
       {hasAttempted ? (
         <div>
           <p>You have already taken today's quiz. Please come back tomorrow when a new quiz will be available!</p>
-          <button onClick={handleReviewClick} className="review-button">
-            Review Your Answers
-          </button>
+          {isAuthenticated && (
+            <button onClick={handleReviewClick} className="review-button">
+              Review Your Answers
+            </button>
+          )}
         </div>
       ) : quizQuestions.length > 0 ? (
         <div>

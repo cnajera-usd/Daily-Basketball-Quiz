@@ -1,125 +1,125 @@
 {
-  "2024-09-05": {
+  "2024-09-06": {
     "questions": [
       {
-        "question": "Who won the NBA Rookie of the Year award in the 2022-2023 season?",
-        "answers": [
-          "Jalen Green",
-          "Scottie Barnes",
-          "Evan Mobley",
-          "Paolo Banchero",
-          "Cade Cunningham"
-        ],
-        "correctAnswerIndex": 3,
-        "difficulty": "Easy"
-      },
-      {
-        "question": "Which team was the runner-up in the 2022-2023 NBA Finals?",
-        "answers": [
-          "Boston Celtics",
-          "Miami Heat",
-          "Golden State Warriors",
-          "Phoenix Suns",
-          "Denver Nuggets"
-        ],
-        "correctAnswerIndex": 1,
-        "difficulty": "Easy"
-      },
-      {
-        "question": "Who was the MVP of the 2023 NBA All-Star Game?",
+        "question": "Which player won the NBA MVP award for the 2022-2023 season?",
         "answers": [
           "Giannis Antetokounmpo",
-          "Jayson Tatum",
-          "Stephen Curry",
-          "LeBron James",
-          "Kevin Durant"
+          "Nikola Jokić",
+          "Joel Embiid",
+          "Luka Dončić",
+          "Jayson Tatum"
+        ],
+        "correctAnswerIndex": 2,
+        "difficulty": "Easy"
+      },
+      {
+        "question": "Which team secured the number 1 seed in the Eastern Conference for the 2023 NBA Playoffs?",
+        "answers": [
+          "Boston Celtics",
+          "Philadelphia 76ers",
+          "Milwaukee Bucks",
+          "Miami Heat",
+          "Cleveland Cavaliers"
+        ],
+        "correctAnswerIndex": 2,
+        "difficulty": "Easy"
+      },
+      {
+        "question": "Which player recorded the highest triple-doubles during the 2022-2023 NBA season?",
+        "answers": [
+          "Luka Dončić",
+          "Nikola Jokić",
+          "Domantas Sabonis",
+          "Russell Westbrook",
+          "LeBron James"
         ],
         "correctAnswerIndex": 1,
         "difficulty": "Medium"
       },
       {
-        "question": "Which player broke the NBA single-season record for three-pointers made in 2022-2023?",
+        "question": "Who holds the NBA single-game record for most three-pointers made?",
         "answers": [
           "Stephen Curry",
           "Klay Thompson",
           "Damian Lillard",
           "James Harden",
-          "Buddy Hield"
+          "Ray Allen"
         ],
-        "correctAnswerIndex": 0,
+        "correctAnswerIndex": 1,
         "difficulty": "Medium"
       },
       {
-        "question": "Who holds the record for the most NBA championships as a player?",
+        "question": "Who was the first player to win Finals MVP on three different teams?",
         "answers": [
-          "Michael Jordan",
-          "Bill Russell",
-          "Kareem Abdul-Jabbar",
-          "Magic Johnson",
-          "Tim Duncan"
+          "LeBron James",
+          "Kawhi Leonard",
+          "Shaquille O'Neal",
+          "Kevin Durant",
+          "Michael Jordan"
         ],
-        "correctAnswerIndex": 1,
+        "correctAnswerIndex": 0,
         "difficulty": "Hard"
       },
       {
-        "question": "Which player scored the most points in the 2023 NBA Playoffs?",
+        "question": "Which team won the first-ever NBA Finals in 1947?",
         "answers": [
-          "Nikola Jokić",
-          "Jimmy Butler",
-          "Jayson Tatum",
+          "Philadelphia Warriors",
+          "Boston Celtics",
+          "New York Knicks",
+          "Minneapolis Lakers",
+          "Chicago Stags"
+        ],
+        "correctAnswerIndex": 0,
+        "difficulty": "Hard"
+      },
+      {
+        "question": "Who was the youngest player to score 60 points in an NBA game?",
+        "answers": [
           "Devin Booker",
-          "Joel Embiid"
-        ],
-        "correctAnswerIndex": 0,
-        "difficulty": "Hard"
-      },
-      {
-        "question": "Which player had the highest PER (Player Efficiency Rating) in the 2023-2024 season?",
-        "answers": [
+          "Kobe Bryant",
+          "LeBron James",
           "Luka Dončić",
-          "Nikola Jokić",
-          "Giannis Antetokounmpo",
-          "Joel Embiid",
-          "Kevin Durant"
-        ],
-        "correctAnswerIndex": 1,
-        "difficulty": "Challenging"
-      },
-      {
-        "question": "Who was the head coach of the Milwaukee Bucks during their 2021 NBA Championship run?",
-        "answers": [
-          "Mike Budenholzer",
-          "Steve Kerr",
-          "Monty Williams",
-          "Doc Rivers",
-          "Erik Spoelstra"
+          "Michael Jordan"
         ],
         "correctAnswerIndex": 0,
         "difficulty": "Challenging"
       },
       {
-        "question": "Which player has the highest career free throw percentage in NBA history?",
+        "question": "Which team did Charles Barkley spend the most seasons playing for?",
         "answers": [
-          "Stephen Curry",
-          "Steve Nash",
-          "Mark Price",
-          "Ray Allen",
-          "Kevin Durant"
+          "Philadelphia 76ers",
+          "Phoenix Suns",
+          "Houston Rockets",
+          "Los Angeles Lakers",
+          "Chicago Bulls"
         ],
-        "correctAnswerIndex": 1,
+        "correctAnswerIndex": 0,
+        "difficulty": "Challenging"
+      },
+      {
+        "question": "Which coach has the most NBA championships as a head coach?",
+        "answers": [
+          "Phil Jackson",
+          "Pat Riley",
+          "Gregg Popovich",
+          "Red Auerbach",
+          "Steve Kerr"
+        ],
+        "correctAnswerIndex": 0,
         "difficulty": "Medium"
       },
       {
-        "question": "Which player was the first overall pick in the 2023 NBA Draft?",
+        "question": "Which player holds the NBA record for most assists in a single game?",
         "answers": [
-          "Victor Wembanyama",
-          "Scoot Henderson",
-          "Brandon Miller",
-          "Amen Thompson",
-          "Chet Holmgren"
+          "John Stockton",
+          "Jason Kidd",
+          "Magic Johnson",
+          "Scott Skiles",
+          "Chris Paul"
         ],
-        "correctAnswerIndex": 0,
-        "difficulty": "Easy"
+        "correctAnswerIndex": 3,
+        "difficulty": "Hard"
       }
     ]
   }
