@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import '../styles/QuizPage.css';
 import quizData from '../data/quizData.json';
 import ScoreModal from '../components/ScoreModal';
@@ -19,14 +19,50 @@ const QuizPage = () => {
   const [showScoreModal, setShowScoreModal] = useState(false);
   const [hasCompletedQuiz, setHasCompletedQuiz] = useState(false);
   const [hasAttempted, setHasAttempted] = useState(false);
-  const [isReviewMode, setIsReviewMode] = useState(false);
-  const [isLoading, setIsLoading] = useState(true); // Track loading state to prevent premature rendering
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Track authentication status
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const localStorageKey = 'quizState';
+
+  // Load the quiz state from localStorage (if it exists)
+  const loadQuizState = useCallback(() => {
+    const savedState = localStorage.getItem(localStorageKey);
+    if (savedState) {
+      const parsedState = JSON.parse(savedState);
+      console.log('Loaded state from localStorage:', parsedState);
+
+      // Update all relevant states from localStorage
+      setCurrentQuestionIndex(parsedState.currentQuestionIndex || 0);
+      setAnswers(parsedState.answers || {});
+      setScore(parsedState.score || 0);
+      const savedAnswerIndex = parsedState.answers[parsedState.currentQuestionIndex]?.selectedAnswerIndex;
+      setSelectedAnswerIndex(savedAnswerIndex !== undefined ? savedAnswerIndex : null);
+
+      console.log('Restored answers and current question from localStorage');
+    } else {
+      console.log('No saved state in localStorage');
+    }
+  }, []);
+
+  // Save the current quiz state to localStorage
+  const saveQuizState = useCallback(() => {
+    const quizState = {
+      currentQuestionIndex,
+      answers,
+      score,
+    };
+    localStorage.setItem(localStorageKey, JSON.stringify(quizState));
+    console.log('Quiz state saved to localStorage:', quizState);
+  }, [currentQuestionIndex, answers, score]);
+
+  const clearQuizState = () => {
+    localStorage.removeItem(localStorageKey);
+    console.log('Quiz state cleared from localStorage');
+  };
 
   useEffect(() => {
     const fetchQuizData = async () => {
       try {
-        // Always fetch quiz questions for today
         const today = moment.tz('America/Los_Angeles').format('YYYY-MM-DD');
         console.log(`Today's date: ${today}`);
 
@@ -36,15 +72,17 @@ const QuizPage = () => {
         }
         setQuizQuestions(questions);
 
+        // Load the quiz state from localStorage
+        loadQuizState();
+
         // Check if the user is logged in
         const user = auth.currentUser;
-        setIsAuthenticated(!!user); // Set authentication state
+        setIsAuthenticated(!!user);
 
         if (user) {
           const userId = user.uid;
           console.log(`User is logged in with ID: ${userId}`);
 
-          // Check if the user has already taken the quiz
           const docName = `${userId}_${today}`;
           const attemptDoc = await getDoc(doc(db, 'quizAttempts', docName));
           console.log(`Quiz attempt exists for ${docName}: ${attemptDoc.exists()}`);
@@ -57,7 +95,6 @@ const QuizPage = () => {
             console.log("No quiz attempt found for today. Proceeding to quiz.");
           }
         } else {
-          // For anonymous users, allow them to take the quiz but don't track attempts
           setHasAttempted(false);
           console.log("Anonymous user, quiz allowed but not tracked.");
         }
@@ -69,7 +106,14 @@ const QuizPage = () => {
     };
 
     fetchQuizData();
-  }, []);
+  }, [loadQuizState]);
+
+  useEffect(() => {
+    if (!hasCompletedQuiz) {
+      console.log('Saving quiz state to localStorage after action...');
+      saveQuizState();
+    }
+  }, [currentQuestionIndex, answers, score, hasCompletedQuiz, saveQuizState]);
 
   const handleReviewClick = async () => {
     if (!isAuthenticated) {
@@ -85,16 +129,11 @@ const QuizPage = () => {
       const attemptDoc = await getDoc(doc(db, 'quizAttempts', docName));
 
       if (attemptDoc.exists()) {
-        console.log("Fetched attemptDoc data:", attemptDoc.data());
-        const userAnswers = attemptDoc.data().answers || {}; // Check if the 'answers' field exists
-        setAnswers(userAnswers); // Loading the saved answers
-        setIsReviewMode(true);
+        const userAnswers = attemptDoc.data().answers || {};
+        setAnswers(userAnswers);
         setHasCompletedQuiz(true);
         setShowScoreModal(false);
-        setCurrentQuestionIndex(0); // Start reviewing from the first question
-        console.log("Set to review mode, answers loaded:", userAnswers);
-      } else {
-        console.error("No previous answers found for review.");
+        setCurrentQuestionIndex(0);
       }
     } catch (error) {
       console.error('Error loading previous answers:', error);
@@ -102,46 +141,29 @@ const QuizPage = () => {
   };
 
   const handleAnswerClick = (index) => {
-    console.log(`Answer clicked: ${index}`);
     setSelectedAnswerIndex(index);
     setFeedback(null);
   };
 
   const handleNextQuestion = () => {
     if (currentQuestionIndex < quizQuestions.length - 1) {
-      const nextIndex = currentQuestionIndex + 1;
-
       setAnswers((prevAnswers) => ({
         ...prevAnswers,
-        [currentQuestionIndex]: {
-          selectedAnswerIndex,
-          feedback
-        },
+        [currentQuestionIndex]: { selectedAnswerIndex, feedback },
       }));
-
-      setCurrentQuestionIndex(nextIndex);
-      setSelectedAnswerIndex(null); // Reset selection for the new question
-      setFeedback(null); // Reset feedback
-
-      const nextAnswer = answers[nextIndex];
-      setSelectedAnswerIndex(nextAnswer?.selectedAnswerIndex || null);
-      setFeedback(nextAnswer?.feedback || null);
+      setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
+      setSelectedAnswerIndex(null);
+      setFeedback(null);
     }
   };
 
   const handlePreviousQuestion = () => {
     if (currentQuestionIndex > 0) {
-      const prevIndex = currentQuestionIndex - 1;
-      setCurrentQuestionIndex(prevIndex);
-
-      const prevAnswer = answers[prevIndex];
+      setCurrentQuestionIndex((prevIndex) => prevIndex - 1);
+      const prevAnswer = answers[currentQuestionIndex - 1];
       setSelectedAnswerIndex(prevAnswer?.selectedAnswerIndex || null);
       setFeedback(prevAnswer?.feedback || null);
     }
-  };
-
-  const closeScoreModal = () => {
-    setShowScoreModal(false);
   };
 
   const handleSubmitAnswer = () => {
@@ -164,21 +186,22 @@ const QuizPage = () => {
     }
 
     if (currentQuestionIndex === quizQuestions.length - 1) {
-      // Final question submitted, mark quiz as completed
       setHasCompletedQuiz(true);
       setShowScoreModal(true);
 
-      // Only save quiz attempt for authenticated users
       if (isAuthenticated) {
         const userId = auth.currentUser?.uid || "anonymous";
         const username = auth.currentUser?.displayName || "Unknown User";
         const quizDate = moment.tz('America/Los_Angeles').format('YYYY-MM-DD');
-
         saveQuizScore(userId, username, score + (isCorrect ? 1 : 0), quizQuestions.length, quizDate);
-      } else {
-        console.log("Anonymous user completed quiz. No score tracking.");
       }
+
+      clearQuizState();
     }
+  };
+
+  const closeScoreModal = () => {
+    setShowScoreModal(false);
   };
 
   if (isLoading) {
@@ -206,17 +229,13 @@ const QuizPage = () => {
             <div className="answer-options">
               {quizQuestions[currentQuestionIndex]?.answers.map((answer, index) => {
                 const correctAnswerIndex = quizQuestions[currentQuestionIndex]?.correctAnswerIndex;
-                const isCorrect = selectedAnswerIndex === correctAnswerIndex;
-
-                // Determine if this is the selected answer during the review mode
                 const isSelectedAnswer = selectedAnswerIndex === index;
 
                 return (
                   <button
                     key={index}
-                    className={`answer-button ${isSelectedAnswer ? 'selected' : ''} ${feedback && index === correctAnswerIndex ? 'correct' : ''} ${feedback && selectedAnswerIndex === index && !isCorrect ? 'incorrect' : ''}`}
-                    onClick={() => !isReviewMode && handleAnswerClick(index)}
-                    disabled={isReviewMode}
+                    className={`answer-button ${isSelectedAnswer ? 'selected' : ''} ${feedback && index === correctAnswerIndex ? 'correct' : ''}`}
+                    onClick={() => handleAnswerClick(index)}
                   >
                     {answer}
                   </button>
@@ -233,14 +252,9 @@ const QuizPage = () => {
                 Previous Question
               </button>
             )}
-            <button
-              className="nav-button submit-button"
-              onClick={handleSubmitAnswer}
-              disabled={hasCompletedQuiz || isReviewMode}
-            >
+            <button className="nav-button submit-button" onClick={handleSubmitAnswer}>
               Submit
             </button>
-
             {currentQuestionIndex < quizQuestions.length - 1 && (
               <button className="nav-button" onClick={handleNextQuestion}>
                 Next Question
