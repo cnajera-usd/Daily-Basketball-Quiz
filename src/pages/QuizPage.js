@@ -22,23 +22,24 @@ const QuizPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const localStorageKey = 'quizState';
+  const localStorageKey = 'nba_quiz_state';
 
-  // Load the quiz state from localStorage (if it exists)
+  // Load the quiz state from localStorage
   const loadQuizState = useCallback(() => {
     const savedState = localStorage.getItem(localStorageKey);
     if (savedState) {
       const parsedState = JSON.parse(savedState);
       console.log('Loaded state from localStorage:', parsedState);
 
-      // Update all relevant states from localStorage
       setCurrentQuestionIndex(parsedState.currentQuestionIndex || 0);
       setAnswers(parsedState.answers || {});
       setScore(parsedState.score || 0);
-      const savedAnswerIndex = parsedState.answers[parsedState.currentQuestionIndex]?.selectedAnswerIndex;
-      setSelectedAnswerIndex(savedAnswerIndex !== undefined ? savedAnswerIndex : null);
 
-      console.log('Restored answers and current question from localStorage');
+      const savedAnswer = parsedState.answers[parsedState.currentQuestionIndex];
+      if (savedAnswer) {
+        setSelectedAnswerIndex(savedAnswer.selectedAnswerIndex);
+        setFeedback(savedAnswer.feedback);
+      }
     } else {
       console.log('No saved state in localStorage');
     }
@@ -60,6 +61,11 @@ const QuizPage = () => {
     console.log('Quiz state cleared from localStorage');
   };
 
+  // Run this at the very beginning to load the quiz state
+  useEffect(() => {
+    loadQuizState();
+  }, [loadQuizState]);
+
   useEffect(() => {
     const fetchQuizData = async () => {
       try {
@@ -72,10 +78,6 @@ const QuizPage = () => {
         }
         setQuizQuestions(questions);
 
-        // Load the quiz state from localStorage
-        loadQuizState();
-
-        // Check if the user is logged in
         const user = auth.currentUser;
         setIsAuthenticated(!!user);
 
@@ -106,7 +108,7 @@ const QuizPage = () => {
     };
 
     fetchQuizData();
-  }, [loadQuizState]);
+  }, []);
 
   useEffect(() => {
     if (!hasCompletedQuiz) {
@@ -141,33 +143,85 @@ const QuizPage = () => {
   };
 
   const handleAnswerClick = (index) => {
-    setSelectedAnswerIndex(index);
-    setFeedback(null);
+    const savedAnswer = answers[currentQuestionIndex];
+    if (!savedAnswer?.isSubmitted) {
+      setSelectedAnswerIndex(index);
+      setFeedback(null);
+
+      const updateAnswers = {
+        ...answers,
+        [currentQuestionIndex]: {
+          selectedAnswerIndex: index,
+          feedback: null,
+          isSubmitted: false,
+        },
+      };
+
+      setAnswers(updateAnswers);
+      localStorage.setItem(localStorageKey, JSON.stringify({
+        currentQuestionIndex,
+        answers: updateAnswers,
+        score,
+      }));
+    }
   };
 
   const handleNextQuestion = () => {
     if (currentQuestionIndex < quizQuestions.length - 1) {
-      setAnswers((prevAnswers) => ({
+      setAnswers((prevAnswers) => {
+        const updateAnswers = {
         ...prevAnswers,
-        [currentQuestionIndex]: { selectedAnswerIndex, feedback },
-      }));
-      setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
-      setSelectedAnswerIndex(null);
-      setFeedback(null);
+        [currentQuestionIndex]: {
+          selectedAnswerIndex,
+          feedback,
+          isSubmitted: true,
+        },
+      };
+
+      // Save the updated answers to local storage
+      const quizState = {
+        currentQuestionIndex: currentQuestionIndex + 1,
+        answers: updateAnswers,
+        score,
+      };
+      localStorage.setItem(localStorageKey, JSON.stringify(quizState));
+
+      return updateAnswers;
+    });
+
+    // move to next question
+    setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
+
+
+
+      // Restore the answer for the next question
+      const nextAnswer = answers[currentQuestionIndex + 1];
+      if (nextAnswer) {
+        setSelectedAnswerIndex(nextAnswer.selectedAnswerIndex);
+        setFeedback(nextAnswer.feedback);
+      } else {
+        setSelectedAnswerIndex(null);
+        setFeedback(null);
+      }
     }
   };
 
   const handlePreviousQuestion = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex((prevIndex) => prevIndex - 1);
+
       const prevAnswer = answers[currentQuestionIndex - 1];
-      setSelectedAnswerIndex(prevAnswer?.selectedAnswerIndex || null);
-      setFeedback(prevAnswer?.feedback || null);
+      if (prevAnswer) {
+        setSelectedAnswerIndex(prevAnswer.selectedAnswerIndex);
+        setFeedback(prevAnswer.feedback);
+      }
+
+      saveQuizState();
     }
   };
 
   const handleSubmitAnswer = () => {
-    if (hasCompletedQuiz) return;
+    if (hasCompletedQuiz || answers[currentQuestionIndex]?.isSubmitted) return;
 
     const isCorrect = selectedAnswerIndex === quizQuestions[currentQuestionIndex]?.correctAnswerIndex;
 
@@ -176,6 +230,7 @@ const QuizPage = () => {
       [currentQuestionIndex]: {
         selectedAnswerIndex,
         feedback: isCorrect ? 'Correct!' : 'Incorrect.',
+        isSubmitted: true,
       },
     }));
 
@@ -184,6 +239,9 @@ const QuizPage = () => {
     if (isCorrect) {
       setScore((prevScore) => prevScore + 1);
     }
+
+    // Save the current state after submitting an answer
+    saveQuizState();
 
     if (currentQuestionIndex === quizQuestions.length - 1) {
       setHasCompletedQuiz(true);
@@ -230,12 +288,14 @@ const QuizPage = () => {
               {quizQuestions[currentQuestionIndex]?.answers.map((answer, index) => {
                 const correctAnswerIndex = quizQuestions[currentQuestionIndex]?.correctAnswerIndex;
                 const isSelectedAnswer = selectedAnswerIndex === index;
+                const isDisabled = answers[currentQuestionIndex]?.isSubmitted;
 
                 return (
                   <button
                     key={index}
                     className={`answer-button ${isSelectedAnswer ? 'selected' : ''} ${feedback && index === correctAnswerIndex ? 'correct' : ''}`}
                     onClick={() => handleAnswerClick(index)}
+                    disabled={isDisabled}
                   >
                     {answer}
                   </button>
@@ -252,7 +312,11 @@ const QuizPage = () => {
                 Previous Question
               </button>
             )}
-            <button className="nav-button submit-button" onClick={handleSubmitAnswer}>
+            <button
+              className="nav-button submit-button"
+              onClick={handleSubmitAnswer}
+              disabled={answers[currentQuestionIndex]?.isSubmitted}
+            >
               Submit
             </button>
             {currentQuestionIndex < quizQuestions.length - 1 && (
